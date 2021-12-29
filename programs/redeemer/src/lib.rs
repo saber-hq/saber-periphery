@@ -21,8 +21,6 @@ pub mod redeemer {
 
     #[access_control(ctx.accounts.validate())]
     pub fn create_redeemer(ctx: Context<CreateRedeemer>, bump: u8) -> ProgramResult {
-        msg!("Instruction: create_redeemer");
-
         let tokens = &ctx.accounts.tokens;
         let redeemer = &mut ctx.accounts.redeemer;
         redeemer.bump = bump;
@@ -36,8 +34,6 @@ pub mod redeemer {
     /// Redeems some of a user's tokens from the redemption vault.
     #[access_control(ctx.accounts.validate())]
     pub fn redeem_tokens(ctx: Context<RedeemTokens>, amount: u64) -> ProgramResult {
-        msg!("Instruction: redeem_tokens");
-
         ctx.accounts.tokens.burn_iou_tokens(
             ctx.accounts.iou_source.to_account_info(),
             ctx.accounts.source_authority.to_account_info(),
@@ -77,8 +73,6 @@ pub mod redeemer {
         amount: u64,
     ) -> ProgramResult {
         ctx.accounts.validate()?;
-        msg!("Instruction: redeem_tokens_from_mint_proxy");
-
         ctx.accounts.redeem_ctx.tokens.burn_iou_tokens(
             ctx.accounts.redeem_ctx.iou_source.to_account_info(),
             ctx.accounts.redeem_ctx.source_authority.to_account_info(),
