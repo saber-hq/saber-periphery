@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "add-decimals"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -447,7 +447,7 @@ checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
 
 [[package]]
 name = "continuation-router"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -765,7 +765,7 @@ dependencies = [
 
 [[package]]
 name = "lockup"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -800,7 +800,7 @@ dependencies = [
 
 [[package]]
 name = "mint-proxy"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -1063,7 +1063,7 @@ dependencies = [
 
 [[package]]
 name = "redeemer"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
