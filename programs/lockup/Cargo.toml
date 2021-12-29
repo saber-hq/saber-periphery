@@ -1,0 +1,25 @@
+[package]
+name = "lockup"
+version = "1.0.0"
+description = "Saber token lockup."
+edition = "2018"
+license = "AGPL-3.0"
+authors = ["michaelhly <michaelhly@gmail.com>"]
+homepage = "https://saber.so"
+repository = "https://github.com/saber-hq/saber-periphery"
+keywords = ["solana", "saber", "anchor"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "lockup"
+
+[features]
+no-entrypoint = []
+cpi = ["no-entrypoint"]
+
+[dependencies]
+anchor-lang = ">=0.17"
+anchor-spl = ">=0.17"
+mint-proxy = { path = "../mint-proxy", version = "^1.0", features = ["cpi"] }
+num-traits = "0.2"
+vipers = "1.5.5"

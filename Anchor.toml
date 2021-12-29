@@ -1,0 +1,44 @@
+anchor_version = "0.19.0"
+solana_version = "1.8.11"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "localnet"
+wallet = "./tests/test_key.json"
+
+[scripts]
+test = "yarn mocha"
+
+[[test.genesis]]
+address = "SSwpkEEcbUqx4vtoEByFjSkhKdCT862DNVb52nZg1UZ"
+program = "./artifacts/programs/stable_swap.so"
+
+[programs.mainnet]
+add_decimals = "DecZY86MU5Gj7kppfUCEmd4LbXXuyZH1yHaP2NTqdiZB"
+continuation_router = "Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t"
+lockup = "LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q"
+mint_proxy = "UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL"
+redeemer = "RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X"
+
+[programs.devnet]
+add_decimals = "DecZY86MU5Gj7kppfUCEmd4LbXXuyZH1yHaP2NTqdiZB"
+continuation_router = "Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t"
+lockup = "LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q"
+mint_proxy = "UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL"
+redeemer = "RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X"
+
+[programs.testnet]
+add_decimals = "DecZY86MU5Gj7kppfUCEmd4LbXXuyZH1yHaP2NTqdiZB"
+continuation_router = "Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t"
+lockup = "LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q"
+mint_proxy = "UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL"
+redeemer = "RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X"
+
+[programs.localnet]
+add_decimals = "DecZY86MU5Gj7kppfUCEmd4LbXXuyZH1yHaP2NTqdiZB"
+continuation_router = "Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t"
+lockup = "LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q"
+mint_proxy = "UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL"
+redeemer = "RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X"

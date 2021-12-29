@@ -1,0 +1,29 @@
+[package]
+name = "continuation-router"
+version = "1.0.0"
+description = "Atomically routes a swap between multiple pools."
+edition = "2018"
+license = "AGPL-3.0"
+authors = ["michaelhly <michaelhly@gmail.com>"]
+homepage = "https://saber.so"
+repository = "https://github.com/saber-hq/saber-periphery"
+keywords = ["solana", "saber", "anchor"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "continuation_router"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = ">=0.17"
+anchor-spl = ">=0.17"
+spl-token = { version = "3.1.1", features = ["no-entrypoint"] }
+continuation-router-syn = { version = "^1.0", path = "./syn" }
+num_enum = "0.5.4"
+stable-swap-anchor = "1.5.4"
+vipers = "1.5.5"

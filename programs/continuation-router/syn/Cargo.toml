@@ -1,0 +1,18 @@
+[package]
+name = "continuation-router-syn"
+version = "1.0.0"
+description = "Macros for generating the continuation router program."
+edition = "2018"
+license = "AGPL-3.0"
+authors = ["michaelhly <michaelhly@gmail.com>"]
+homepage = "https://saber.so"
+repository = "https://github.com/saber-hq/saber-periphery"
+keywords = ["solana", "saber", "anchor"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+anchor-lang = ">=0.17"
+quote = "1.0"
+syn = "1.0"

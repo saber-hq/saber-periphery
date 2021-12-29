@@ -1,0 +1,31 @@
+[package]
+name = "add-decimals"
+authors = ["Ian Macalinao <ian@stableswap.pro>"]
+version = "1.0.0"
+description = "Wraps another token to give it more decimals."
+edition = "2018"
+license = "AGPL-3.0"
+homepage = "https://saber.so"
+repository = "https://github.com/saber-hq/saber-periphery"
+keywords = ["solana", "saber", "anchor"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "add_decimals"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = ">=0.17"
+anchor-spl = ">=0.17"
+vipers = "1.5.5"
+continuation-router = { path = "../continuation-router", version = "^1.0", features = [
+    "cpi"
+] }
+
+[dev-dependencies]
+proptest = { version = "1.0" }

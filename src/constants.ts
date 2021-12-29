@@ -1,0 +1,67 @@
+import { buildCoderMap } from "@saberhq/anchor-contrib";
+import { PublicKey } from "@solana/web3.js";
+
+import { RedeemerJSON } from "./idls/redeemer";
+import type {
+  AddDecimalsProgram,
+  AddDecimalsTypes,
+  ContinuationRouterProgram,
+  ContinuationRouterTypes,
+  LockupProgram,
+  LockupTypes,
+  MintProxyProgram,
+  MintProxyTypes,
+} from "./programs";
+import {
+  AddDecimalsJSON,
+  ContinuationRouterJSON,
+  LockupJSON,
+  MintProxyJSON,
+} from "./programs";
+import type { RedeemerProgram, RedeemerTypes } from "./programs/redeemer";
+
+/**
+ * Addresses of Saber programs deployed on `devnet` and `mainnet-beta`.
+ */
+export const SABER_ADDRESSES = {
+  AddDecimals: new PublicKey("DecZY86MU5Gj7kppfUCEmd4LbXXuyZH1yHaP2NTqdiZB"),
+  ContinuationRouter: new PublicKey(
+    "Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t"
+  ),
+  Lockup: new PublicKey("LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q"),
+  MintProxy: new PublicKey("UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL"),
+  Redeemer: new PublicKey("RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X"),
+} as const;
+
+/**
+ * IDLs of Saber programs.
+ */
+export const SABER_IDLS = {
+  AddDecimals: AddDecimalsJSON,
+  ContinuationRouter: ContinuationRouterJSON,
+  Lockup: LockupJSON,
+  MintProxy: MintProxyJSON,
+  Redeemer: RedeemerJSON,
+} as const;
+
+/**
+ * Saber program types.
+ */
+export interface SaberPrograms {
+  AddDecimals: AddDecimalsProgram;
+  ContinuationRouter: ContinuationRouterProgram;
+  Lockup: LockupProgram;
+  MintProxy: MintProxyProgram;
+  Redeemer: RedeemerProgram;
+}
+
+/**
+ * Saber coders.
+ */
+export const SABER_CODERS = buildCoderMap<{
+  AddDecimals: AddDecimalsTypes;
+  ContinuationRouter: ContinuationRouterTypes;
+  Lockup: LockupTypes;
+  MintProxy: MintProxyTypes;
+  Redeemer: RedeemerTypes;
+}>(SABER_IDLS, SABER_ADDRESSES);
