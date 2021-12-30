@@ -11,6 +11,8 @@ import type { StableSwapPool } from "./stableSwap";
 import { pairFromStableSwap } from "./stableSwap";
 import type { PoolOutputResult, PoolStrategy } from "./strategy";
 
+export * from "./addDecimals";
+export * from "./stableSwap";
 export * from "./strategy";
 
 /**
