@@ -1,6 +1,6 @@
-//! A relatively advanced example of a lockup program. If you're new to Anchor,
-//! it's suggested to start with the other examples.
-
+//! A token lockup program for linear release with cliff.
+#![deny(rustdoc::all)]
+#![allow(rustdoc::missing_doc_code_examples)]
 #![allow(deprecated)]
 
 /// Returns the program-derived-address seeds used for creating the associated

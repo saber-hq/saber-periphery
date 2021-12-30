@@ -2,7 +2,7 @@
 name = "mint-proxy"
 version = "1.0.5"
 description = "Manages the minting of new Saber tokens."
-edition = "2018"
+edition = "2021"
 license = "AGPL-3.0"
 authors = ["michaelhly <michaelhly@gmail.com>"]
 homepage = "https://saber.so"

@@ -1,6 +1,6 @@
-# lockup
+# continuation-router-syn
 
-A token lockup program for linear release with cliff.
+Macros for generating the continuation router program.
 
 ## License
 

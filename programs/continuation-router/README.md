@@ -1,6 +1,6 @@
-# lockup
+# continuation-router
 
-A token lockup program for linear release with cliff.
+Atomically routes a swap between multiple pools.
 
 ## License
 

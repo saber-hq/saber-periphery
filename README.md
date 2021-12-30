@@ -20,9 +20,9 @@ Peripheral contracts for interacting with Saber.
 
 ## NPM Packages
 
-| Package                    | Description                        | Version                                                                                                                     | Docs                                                                                        |
-| :------------------------- | :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------ |
-| `@saberhq/saber-periphery` | TypeScript SDK for Saber Periphery | [![npm](https://img.shields.io/npm/v/@saberhq/saber-periphery.svg)](https://www.npmjs.com/package/@saberhq/saber-periphery) | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://docs.saber.so/periphery/) |
+| Package                    | Description                        | Version                                                                                                                     | Docs                                                                                                      |
+| :------------------------- | :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| `@saberhq/saber-periphery` | TypeScript SDK for Saber Periphery | [![npm](https://img.shields.io/npm/v/@saberhq/saber-periphery.svg)](https://www.npmjs.com/package/@saberhq/saber-periphery) | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://saber-hq.github.io/saber-periphery/ts/) |
 
 ## Program Addresses
 
@@ -36,4 +36,4 @@ The Saber periphery contracts are deployed to `mainnet-beta`, `devnet`. and `tes
 
 ## License
 
-AGPL-3.0
+The Saber Periphery contracts are licensed under the Affero GPL License, Version 3.0.

@@ -65,3 +65,22 @@ export const SABER_CODERS = buildCoderMap<{
   MintProxy: MintProxyTypes;
   Redeemer: RedeemerTypes;
 }>(SABER_IDLS, SABER_ADDRESSES);
+
+/**
+ * Mint of the Saber IOU token.
+ */
+export const SABER_IOU_MINT = new PublicKey(
+  "iouQcQBAiEXe6cKLS85zmZxUqaCqBdeHFpqKoSz615u"
+);
+
+/**
+ * Key of the Saber Redeemer.
+ */
+export const SABER_REDEEMER_KEY = new PublicKey(
+  "CL9wkGFT3SZRRNa9dgaovuRV7jrVVigBUZ6DjcgySsCU"
+);
+
+/**
+ * Mint of the Saber Protocol Token.
+ */
+export const SBR_MINT = "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1";
