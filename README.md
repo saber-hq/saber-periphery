@@ -36,4 +36,4 @@ The Saber periphery contracts are deployed to `mainnet-beta`, `devnet`. and `tes
 
 ## License
 
-AGPL-3.0
+The Saber Periphery contracts are licensed under the Affero GPL License, Version 3.0.
