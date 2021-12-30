@@ -2,7 +2,7 @@
 name = "continuation-router"
 version = "1.0.5"
 description = "Atomically routes a swap between multiple pools."
-edition = "2018"
+edition = "2021"
 license = "AGPL-3.0"
 authors = ["michaelhly <michaelhly@gmail.com>"]
 homepage = "https://saber.so"
