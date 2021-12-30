@@ -1,19 +1,7 @@
 {
+  "extends": "@saberhq/tsconfig/tsconfig.lib.json",
   "compilerOptions": {
-    "target": "ES2015",
     "module": "CommonJS",
-    "moduleResolution": "node",
-
-    "strict": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "noEmit": true,
     "lib": ["ES2019"],
     "types": ["node"]

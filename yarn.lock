@@ -883,6 +883,7 @@ __metadata:
     "@saberhq/solana-contrib": ^1.12.9
     "@saberhq/stableswap-sdk": ^1.12.9
     "@saberhq/token-utils": ^1.12.9
+    "@saberhq/tsconfig": ^1.12.9
     "@solana/web3.js": ^1.31.0
     "@types/bn.js": ^5.1.0
     "@types/chai": ^4.3.0
@@ -964,6 +965,13 @@ __metadata:
     bn.js: ^5.2
     jsbi: ^3 || ^4
   checksum: 39406eaa9f5362955c2cdb55651ff486117eef55e7164b198218a2e19c86c8b4cb32eff85818dcf9e0105782d300d4fb1394a8f8b619a7af657f62c2d6fb2036
+  languageName: node
+  linkType: hard
+
+"@saberhq/tsconfig@npm:^1.12.9":
+  version: 1.12.9
+  resolution: "@saberhq/tsconfig@npm:1.12.9"
+  checksum: 0086006346b6d0ab485dfa177d5d850b63eef6b1a9b07a625a37bab891790defb1b81247d43a6427a82e35fc7bf26f6e1b1a5448ed428b850283dde2db2f9447
   languageName: node
   linkType: hard
 
