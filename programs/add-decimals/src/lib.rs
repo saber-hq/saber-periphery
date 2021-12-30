@@ -10,7 +10,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use continuation_router::{ActionType, RouterActionProcessor};
 use std::convert::TryFrom;
-use vipers::{assert_keys_eq, unwrap_int, Validate};
+use vipers::{assert_keys_eq, invariant, unwrap_int, Validate};
 use vipers::{program_err, try_or_err, unwrap_or_err};
 
 mod events;
@@ -221,6 +221,8 @@ impl<'info> InitializeWrapper<'info> {
             self.underlying_mint,
             InitWrapperUnderlyingMintMismatch
         );
+        invariant!(self.wrapper_underlying_tokens.delegate.is_none());
+        invariant!(self.wrapper_underlying_tokens.close_authority.is_none());
 
         // mint checks
         assert_keys_eq!(
