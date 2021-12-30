@@ -1,6 +1,6 @@
 [package]
 name = "continuation-router-syn"
-version = "1.0.0"
+version = "1.0.6"
 description = "Macros for generating the continuation router program."
 edition = "2021"
 license = "AGPL-3.0"
