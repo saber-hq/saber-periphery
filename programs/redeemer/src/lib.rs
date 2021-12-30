@@ -19,6 +19,7 @@ declare_id!("RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X");
 pub mod redeemer {
     use super::*;
 
+    /// Initializes the [Redeemer].
     #[access_control(ctx.accounts.validate())]
     pub fn create_redeemer(ctx: Context<CreateRedeemer>, bump: u8) -> ProgramResult {
         let tokens = &ctx.accounts.tokens;
