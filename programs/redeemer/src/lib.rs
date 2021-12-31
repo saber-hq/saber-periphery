@@ -157,13 +157,13 @@ pub struct Redeemer {
 /// Token-related accounts with mutation.
 #[derive(Accounts)]
 pub struct MutTokenPair<'info> {
-    /// ...
+    /// Mint of the IOU token.
     #[account(mut)]
     pub iou_mint: Account<'info, Mint>,
-    /// ...
+    /// Mint of the redemption token.
     #[account(mut)]
     pub redemption_mint: Account<'info, Mint>,
-    /// ...
+    /// Vault of the redemption token.
     #[account(mut)]
     pub redemption_vault: Account<'info, TokenAccount>,
     /// The spl_token program.
@@ -173,11 +173,11 @@ pub struct MutTokenPair<'info> {
 /// Token-related accounts without mutation.
 #[derive(Accounts)]
 pub struct ReadonlyTokenPair<'info> {
-    /// ...
+    /// Mint of the IOU token.
     pub iou_mint: Account<'info, Mint>,
-    /// ...
+    /// Mint of the redemption token.
     pub redemption_mint: Account<'info, Mint>,
-    /// ...
+    /// Vault of the redemption token.
     pub redemption_vault: Account<'info, TokenAccount>,
 }
 
