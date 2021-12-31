@@ -27,12 +27,14 @@ pub mod add_decimals {
 
     /// Initializes a new wrapper.
     ///
-    /// The wrapper is an associated account with the seeds:
-    /// - token_program (the pubkey of the SPL token program)
-    /// - underlying_mint (mint of the underlying asset)
-    /// - decimals (the number of decimals, must be greater than the decimals of the underlying's mint)
+    /// The wrapper is a PDA account with the seeds:
     ///
-    /// Anyone can initialize a new wrapper. To do so:
+    /// - `"anchor"`
+    /// - `[InitializeWrapper::underlying_mint]` (mint of the underlying asset)
+    /// - `wrapper_mint.decimals` (the number of decimals, must be greater than the decimals of the underlying's mint)
+    ///
+    /// Anyone may initialize a new wrapper. To do so:
+    ///
     /// 1. Compute the address of the new wrapper
     /// 2. Initialize an account for the wrapper to hold the underlying tokens.
     /// 3. Initialize a mint for the wrapper. It is recommended to use a vanity address via `solana-keygen grind`.
