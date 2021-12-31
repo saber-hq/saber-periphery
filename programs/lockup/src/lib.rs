@@ -21,14 +21,16 @@ use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
 use vipers::unwrap_or_err;
 
-mod calculator;
+pub mod calculator;
 
 declare_id!("LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q");
 
+/// Saber token lockup program.
 #[program]
 pub mod lockup {
     use super::*;
 
+    /// State of the [lockup] program.
     #[state]
     pub struct Lockup {
         /// Owner that controls/creates the lockup.
@@ -111,14 +113,14 @@ pub mod lockup {
             Ok(())
         }
 
-        /// Transfers ownership to another account.
+        /// Transfers ownership of the [Lockup] to another account.
         #[access_control(check_auth(self, &ctx.accounts))]
         pub fn transfer_ownership(&mut self, ctx: Context<Auth>, next_owner: Pubkey) -> Result<()> {
             self.pending_owner = next_owner;
             Ok(())
         }
 
-        /// Accepts the new ownership.
+        /// Accepts the new ownership of the [Lockup].
         pub fn accept_ownership(&mut self, ctx: Context<Auth>) -> Result<()> {
             require!(ctx.accounts.owner.is_signer, Unauthorized);
             require!(
@@ -130,7 +132,7 @@ pub mod lockup {
             Ok(())
         }
 
-        /// Withdraws all available lockup tokens.
+        /// Withdraws all available [Release] tokens.
         pub fn withdraw(&self, ctx: Context<Withdraw>) -> ProgramResult {
             ctx.accounts.validate()?;
 
@@ -180,7 +182,7 @@ pub mod lockup {
             Ok(())
         }
 
-        /// Withdraws tokens from the release with an amount.
+        /// Withdraws tokens from the [Release] with an amount.
         pub fn withdraw_with_amount(&self, ctx: Context<Withdraw>, amount: u64) -> Result<()> {
             ctx.accounts.validate()?;
 

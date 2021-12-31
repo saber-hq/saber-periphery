@@ -3,23 +3,24 @@
 use crate::Release;
 use num_traits::ToPrimitive;
 
+/// Computes the amount of tokens available for withdrawal for a given [Release].
 pub fn available_for_withdrawal(release: &Release, current_ts: i64) -> u64 {
     std::cmp::min(outstanding_released(release, current_ts), balance(release))
 }
 
-// The amount of funds currently in the vault.
+/// The amount of funds currently in the vault.
 fn balance(release: &Release) -> u64 {
     release.outstanding
 }
 
-// The amount of outstanding locked tokens released.
+/// The amount of outstanding locked tokens released.
 fn outstanding_released(release: &Release, current_ts: i64) -> u64 {
     total_released(release, current_ts)
         .checked_sub(withdrawn_amount(release))
         .unwrap()
 }
 
-// Returns the amount withdrawn from this release account.
+/// Returns the amount withdrawn from this release account.
 fn withdrawn_amount(release: &Release) -> u64 {
     release
         .start_balance
@@ -27,8 +28,8 @@ fn withdrawn_amount(release: &Release) -> u64 {
         .unwrap()
 }
 
-// Returns the total released amount up to the given ts, assuming zero
-// withdrawals and zero funds sent to other programs.
+/// Returns the total released amount up to the given ts, assuming zero
+/// withdrawals and zero funds sent to other programs.
 fn total_released(release: &Release, current_ts: i64) -> u64 {
     if current_ts < release.start_ts {
         0
@@ -39,6 +40,7 @@ fn total_released(release: &Release, current_ts: i64) -> u64 {
     }
 }
 
+/// Computes the linear unlock.
 fn linear_unlock(release: &Release, current_ts: i64) -> Option<u64> {
     // Signed division not supported.
     let current_ts = current_ts as u64;
