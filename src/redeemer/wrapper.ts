@@ -97,7 +97,6 @@ export class RedeemerWrapper {
     const { account, state } = this.sdk.programs.MintProxy;
     const mintProxyData = await state.fetch();
 
-    console.log("mpx authority", mintProxyData.proxyMintAuthority.toString());
     return this.program.instruction.redeemTokensFromMintProxy(
       args.tokenAmount,
       {

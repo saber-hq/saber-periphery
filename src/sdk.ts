@@ -15,8 +15,6 @@ import { Router } from "./router";
 import { MintProxyWrapper } from "./wrappers";
 import { LockupWrapper } from "./wrappers/lockup";
 
-export const SBR_ADDRESS = "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1";
-
 /**
  * Saber SDK.
  */
