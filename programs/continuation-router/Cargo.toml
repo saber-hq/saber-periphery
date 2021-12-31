@@ -1,6 +1,6 @@
 [package]
 name = "continuation-router"
-version = "1.0.6"
+version = "1.0.7"
 description = "Atomically routes a swap between multiple pools."
 edition = "2021"
 license = "AGPL-3.0"

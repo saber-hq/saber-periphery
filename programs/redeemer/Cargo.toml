@@ -1,6 +1,6 @@
 [package]
 name = "redeemer"
-version = "1.0.6"
+version = "1.0.7"
 description = "Redeems Quarry IOU tokens for Saber tokens via the Saber mint proxy."
 edition = "2021"
 license = "AGPL-3.0"
