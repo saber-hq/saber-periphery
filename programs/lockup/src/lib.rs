@@ -30,7 +30,6 @@ declare_id!("LockKXdYQVMbhhckwH3BxoYJ9FYatcZjwNGEuCwY33Q");
 pub mod lockup {
     use super::*;
 
-    /// State of the [lockup] program.
     #[state]
     pub struct Lockup {
         /// Owner that controls/creates the lockup.
@@ -40,6 +39,7 @@ pub mod lockup {
     }
 
     impl Lockup {
+        /// Initializes the [Lockup].
         pub fn new(ctx: Context<Initialize>) -> Result<Lockup> {
             Ok(Lockup {
                 owner: ctx.accounts.auth.owner.key(),
