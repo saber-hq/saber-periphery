@@ -1,20 +1,19 @@
-use crate::{
-    CreateRedeemer, MutTokenPair, ReadonlyTokenPair, RedeemTokens, RedeemTokensFromMintProxy,
-};
-use anchor_lang::prelude::*;
+use crate::*;
 use anchor_spl::token;
 use vipers::validate::Validate;
-use vipers::{assert_ata, assert_keys_eq, assert_owner};
+use vipers::{assert_keys_eq, assert_owner, invariant};
 
 impl<'info> Validate<'info> for CreateRedeemer<'info> {
     fn validate(&self) -> ProgramResult {
         self.tokens.validate()?;
 
-        assert_ata!(
-            self.tokens.redemption_vault,
-            self.redeemer,
+        assert_keys_eq!(self.tokens.redemption_vault.owner, self.redeemer);
+        assert_keys_eq!(
+            self.tokens.redemption_vault.mint,
             self.tokens.redemption_mint
         );
+        invariant!(self.tokens.redemption_vault.delegate.is_none());
+        invariant!(self.tokens.redemption_vault.close_authority.is_none());
 
         Ok(())
     }
