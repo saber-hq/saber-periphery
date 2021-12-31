@@ -1,5 +1,6 @@
 //! Macros.
 
+/// Generates the signer seeds for the [crate::Redeemer].
 #[macro_export]
 macro_rules! gen_redeemer_signer_seeds {
     ($redeemer:expr) => {

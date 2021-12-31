@@ -1,4 +1,6 @@
 //! Redeems Quarry IOU tokens for Saber tokens via the Saber mint proxy.
+#![deny(rustdoc::all)]
+#![allow(rustdoc::missing_doc_code_examples)]
 
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
@@ -10,12 +12,10 @@ mod account_validators;
 mod macros;
 mod mut_token_pair;
 
-/// Wrapper module.
-pub mod redeemer_program {}
-
 declare_id!("RDM23yr8pr1kEAmhnFpaabPny6C9UVcEcok3Py5v86X");
 
 #[program]
+/// [redeemer] program.
 pub mod redeemer {
     use super::*;
 
@@ -132,12 +132,15 @@ pub mod redeemer {
     }
 }
 
-/// --------------------------------
-/// Accounts
-/// --------------------------------
+// --------------------------------
+// Accounts
+// --------------------------------
+
+/// Allows redeeming the [Redeemer::iou_mint] for the [Redeemer::redemption_mint].
 #[account]
 #[derive(Default)]
 pub struct Redeemer {
+    /// Bump seed.
     pub bump: u8,
     /// ...
     pub iou_mint: Pubkey,
@@ -147,10 +150,11 @@ pub struct Redeemer {
     pub redemption_vault: Pubkey,
 }
 
-/// --------------------------------
-/// Instructions
-/// --------------------------------
+// --------------------------------
+// Instructions
+// --------------------------------
 
+/// Token-related accounts with mutation.
 #[derive(Accounts)]
 pub struct MutTokenPair<'info> {
     /// ...
@@ -166,6 +170,7 @@ pub struct MutTokenPair<'info> {
     pub token_program: Program<'info, Token>,
 }
 
+/// Token-related accounts without mutation.
 #[derive(Accounts)]
 pub struct ReadonlyTokenPair<'info> {
     /// ...
@@ -176,6 +181,7 @@ pub struct ReadonlyTokenPair<'info> {
     pub redemption_vault: Account<'info, TokenAccount>,
 }
 
+/// Accounts for [redeemer::create_redeemer]
 #[derive(Accounts)]
 #[instruction(bump: u8)]
 pub struct CreateRedeemer<'info> {
@@ -200,6 +206,7 @@ pub struct CreateRedeemer<'info> {
     pub system_program: Program<'info, System>,
 }
 
+/// Accounts for [redeemer::redeem_tokens].
 #[derive(Accounts)]
 pub struct RedeemTokens<'info> {
     /// Redeemer PDA.
@@ -216,6 +223,7 @@ pub struct RedeemTokens<'info> {
     pub redemption_destination: Box<Account<'info, TokenAccount>>,
 }
 
+/// Accounts for [redeemer::redeem_tokens_from_mint_proxy].
 #[derive(Accounts)]
 pub struct RedeemTokensFromMintProxy<'info> {
     /// Redeem tokens.
@@ -233,21 +241,25 @@ pub struct RedeemTokensFromMintProxy<'info> {
     pub minter_info: Box<Account<'info, MinterInfo>>,
 }
 
-/// --------------------------------
-/// Events
-/// --------------------------------
+// --------------------------------
+// Events
+// --------------------------------
+
+/// Emitted when a user redeems tokens.
 #[event]
 pub struct RedeemTokensEvent {
+    /// User redeemed.
     #[index]
     pub user: Pubkey,
+    /// Mint of the IOU redeemed.
     pub iou_mint: Pubkey,
+    /// Mint of the redemption token.
     pub destination_mint: Pubkey,
+    /// Amount redeemed.
     pub amount: u64,
 }
 
-/// --------------------------------
-/// Errors
-/// --------------------------------
+/// Errors.
 #[error]
 pub enum ErrorCode {
     #[msg("Unauthorized.")]
