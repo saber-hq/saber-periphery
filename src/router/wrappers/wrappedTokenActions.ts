@@ -169,12 +169,23 @@ export class WrappedTokenActions {
     ]);
   }
 
-  async unwrapAll(): Promise<TransactionInstruction> {
+  async unwrapAllIX(): Promise<TransactionInstruction> {
     invariant(this.wrapped.token, "token not initialized");
     const { accounts } = await this.genUserStake();
     return this.program.instruction.withdrawAll({
       accounts,
     });
+  }
+
+  async unwrapAll(): Promise<TransactionEnvelope> {
+    invariant(this.wrapped.token, "token not initialized");
+    const { accounts, instructions } = await this.genUserStake();
+    return new TransactionEnvelope(this.provider, [
+      ...instructions,
+      this.program.instruction.withdrawAll({
+        accounts,
+      }),
+    ]);
   }
 
   async getAssociatedTokenAddress(): Promise<PublicKey> {

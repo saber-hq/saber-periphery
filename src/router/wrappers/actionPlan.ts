@@ -283,7 +283,7 @@ export class ActionPlan {
         adWithdrawAction.underlying,
         adWithdrawAction.decimals
       );
-      allInstructions.push(await wrapped.unwrapAll());
+      allInstructions.push(await wrapped.unwrapAllIX());
     }
 
     return new TransactionEnvelope(provider, allInstructions);
