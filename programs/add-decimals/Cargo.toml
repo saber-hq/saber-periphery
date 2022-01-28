@@ -22,7 +22,7 @@ default = []
 [dependencies]
 anchor-lang = ">=0.17"
 anchor-spl = ">=0.17"
-vipers = "1.5.5"
+vipers = "1.5.9"
 continuation-router = { path = "../continuation-router", version = "^1.0", features = [
     "cpi"
 ] }
