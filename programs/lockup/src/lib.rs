@@ -15,6 +15,7 @@ macro_rules! associated_seeds {
     };
 }
 
+use anchor_lang::accounts::cpi_state::CpiState;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
