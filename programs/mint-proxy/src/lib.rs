@@ -11,6 +11,9 @@ mod proxy_seeds;
 
 declare_id!("UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL");
 
+/// Address of the mint proxy program's state assocated account.
+pub const PROXY_STATE_ACCOUNT: Pubkey =
+    static_pubkey::static_pubkey!("9qRjwMQYrkd5JvsENaYYxSCgwEuVhK4qAo5kCFHSmdmL");
 /// Address of the proxy mint authority.
 pub const PROXY_MINT_AUTHORITY: Pubkey =
     static_pubkey::static_pubkey!("GyktbGXbH9kvxP8RGfWsnFtuRgC7QCQo2WBqpo3ryk7L");
@@ -67,10 +70,7 @@ pub mod mint_proxy {
                 InvalidFreezeAuthority
             );
 
-            let state_associated_account =
-                anchor_lang::ProgramState::<MintProxy>::address(&crate::ID);
-            let proxy_signer_seeds =
-                proxy_seeds::gen_signer_seeds(&nonce, &state_associated_account);
+            let proxy_signer_seeds = proxy_seeds::gen_signer_seeds(&nonce, &PROXY_STATE_ACCOUNT);
             require!(
                 vipers::validate_derived_address(
                     ctx.accounts.proxy_mint_authority.key,
@@ -97,7 +97,7 @@ pub mod mint_proxy {
                 proxy_mint_authority,
                 owner: *ctx.accounts.owner.key,
                 pending_owner: Pubkey::default(),
-                state_associated_account,
+                state_associated_account: PROXY_STATE_ACCOUNT,
                 token_mint: *ctx.accounts.token_mint.to_account_info().key,
                 hard_cap,
             })
