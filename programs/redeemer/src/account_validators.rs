@@ -1,5 +1,5 @@
 use crate::*;
-use anchor_spl::token;
+
 use vipers::validate::Validate;
 use vipers::{assert_keys_eq, invariant};
 
