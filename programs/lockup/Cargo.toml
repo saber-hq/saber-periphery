@@ -1,6 +1,6 @@
 [package]
 name = "lockup"
-version = "1.0.10"
+version = "1.0.11"
 description = "Saber token lockup."
 edition = "2021"
 license = "AGPL-3.0"
