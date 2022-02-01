@@ -1,7 +1,7 @@
 [package]
 name = "add-decimals"
 authors = ["Ian Macalinao <ian@stableswap.pro>"]
-version = "1.0.9"
+version = "1.0.10"
 description = "Wraps another token to give it more decimals."
 edition = "2021"
 license = "AGPL-3.0"
