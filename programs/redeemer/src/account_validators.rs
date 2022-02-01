@@ -1,7 +1,7 @@
 use crate::*;
-use anchor_spl::token;
+
 use vipers::validate::Validate;
-use vipers::{assert_keys_eq, assert_owner, invariant};
+use vipers::{assert_keys_eq, invariant};
 
 impl<'info> Validate<'info> for CreateRedeemer<'info> {
     fn validate(&self) -> ProgramResult {
@@ -63,8 +63,6 @@ impl<'info> Validate<'info> for RedeemTokensFromMintProxy<'info> {
             "proxy_mint_authority"
         );
 
-        assert_owner!(self.mint_proxy_state, mint_proxy::ID);
-
         Ok(())
     }
 }
@@ -77,10 +75,6 @@ impl<'info> Validate<'info> for ReadonlyTokenPair<'info> {
         );
         assert_keys_eq!(self.redemption_vault.mint, self.redemption_mint);
 
-        assert_owner!(self.iou_mint, token::ID);
-        assert_owner!(self.redemption_mint, token::ID);
-        assert_owner!(self.redemption_vault, token::ID);
-
         Ok(())
     }
 }
@@ -88,10 +82,6 @@ impl<'info> Validate<'info> for ReadonlyTokenPair<'info> {
 impl<'info> Validate<'info> for MutTokenPair<'info> {
     fn validate(&self) -> ProgramResult {
         assert_keys_eq!(self.redemption_vault.mint, self.redemption_mint);
-
-        assert_owner!(self.iou_mint, token::ID);
-        assert_owner!(self.redemption_mint, token::ID);
-        assert_owner!(self.redemption_vault, token::ID);
 
         Ok(())
     }

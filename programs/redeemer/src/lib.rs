@@ -1,7 +1,9 @@
 //! Redeems Quarry IOU tokens for Saber tokens via the Saber mint proxy.
 #![deny(rustdoc::all)]
 #![allow(rustdoc::missing_doc_code_examples)]
+#![allow(deprecated)]
 
+use anchor_lang::accounts::cpi_state::CpiState;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;

@@ -10,7 +10,6 @@ macro_rules! build_swap_context {
         stable_swap_anchor::SwapUserContext {
             token_program: $ctx.token_program.clone(),
             user_authority: $ctx.owner.clone(),
-            clock: (*$component).swap.clock.to_account_info(),
             swap: $component.swap.swap.clone(),
             swap_authority: $component.swap.swap_authority.clone(),
         }
