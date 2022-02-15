@@ -23,6 +23,6 @@ default = []
 anchor-lang = ">=0.17"
 anchor-spl = ">=0.17"
 bytemuck = "1.4.0"
-vipers = "1.5.5"
+vipers = "1.6.1"
 spl-token = { version = "3.1.1", features = ["no-entrypoint"] }
 static-pubkey = "1.0.2"
