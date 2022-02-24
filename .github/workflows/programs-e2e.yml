@@ -33,7 +33,7 @@ jobs:
         run: nix shell .#ci --command ./scripts/parse-idls.sh
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.0.0
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -117,7 +117,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-modules-
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: "16"
       - run: yarn install
