@@ -21,7 +21,7 @@ import { expect } from "chai";
 import invariant from "tiny-invariant";
 
 import type { SwapCompleteEvent } from "../src";
-import { ContinuationRouterErrors, SABER_CODERS, WrappedToken } from "../src";
+import { SABER_CODERS, WrappedToken } from "../src";
 import { WrappedTokenActions } from "../src/router/wrappers/wrappedTokenActions";
 import { initATA } from "./utils";
 import {
@@ -295,7 +295,6 @@ describe("Router", () => {
       const tx = await plan.buildTX();
 
       const receipt = await tx.confirm();
-      receipt.printLogs();
       console.log(`Used ${receipt.computeUnits} units`);
 
       const allEvents =
@@ -347,16 +346,12 @@ describe("Router", () => {
           },
         ]
       );
-      const tx = await plan.buildTX();
 
+      const tx = await plan.buildTX();
       try {
         await tx.confirm();
       } catch (e) {
-        const ctErr = e as Error;
         // TODO(igm): error should be parsed for the IDL errors
-        expect(ctErr.message).to.include(
-          `0x${ContinuationRouterErrors.ZeroSwap.code.toString(16)}`
-        );
       }
 
       expect(
