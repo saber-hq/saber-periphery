@@ -1,7 +1,7 @@
 import * as anchor from "@project-serum/anchor";
-import { makeSaberProvider } from "@saberhq/anchor-contrib";
 import { chaiSolana } from "@saberhq/chai-solana";
 import type { Provider } from "@saberhq/solana-contrib";
+import { SolanaProvider } from "@saberhq/solana-contrib";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createMint,
@@ -33,7 +33,11 @@ export const makeSDK = (): Saber => {
   }
   const anchorProvider = anchor.getProvider();
   // if the program isn't loaded, load the default
-  const provider = makeSaberProvider(anchorProvider);
+  const provider = SolanaProvider.init({
+    connection: anchorProvider.connection,
+    wallet: anchorProvider.wallet,
+    opts: anchorProvider.opts,
+  });
   return Saber.load({ provider });
 };
 
