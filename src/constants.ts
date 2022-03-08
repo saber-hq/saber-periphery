@@ -84,3 +84,8 @@ export const SABER_REDEEMER_KEY = new PublicKey(
  * Mint of the Saber Protocol Token.
  */
 export const SBR_MINT = "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1";
+
+/**
+ * PublicKey of the Saber Protocol Token.
+ */
+export const SBR_ADDRESS = new PublicKey(SBR_MINT);

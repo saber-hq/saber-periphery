@@ -19,10 +19,10 @@
         ci = pkgs.buildEnv {
           name = "ci";
           paths = with pkgs;
-            (pkgs.lib.optionals pkgs.stdenv.isLinux ([ libudev ])) ++ [
-              solana-install
+            (pkgs.lib.optionals pkgs.stdenv.isLinux ([ udev ])) ++ [
               anchor-0_19_0
               cargo-workspaces
+              solana-basic
 
               # sdk
               nodejs
@@ -51,7 +51,6 @@
             cargo-deps
             gh
             spl-token-cli
-            solana-cli
           ];
         };
       });
