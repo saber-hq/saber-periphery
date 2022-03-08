@@ -1,7 +1,7 @@
 {
   "name": "@saberhq/saber-periphery",
   "description": "TypeScript SDK for Saber Periphery",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "repository": "https://github.com/saber-hq/saber-periphery.git",
