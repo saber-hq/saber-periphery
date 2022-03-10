@@ -38,10 +38,15 @@ pub fn invoke_perform_mint<'a, 'b, 'c, 'info>(
     };
     let mut acc_infos = ctx.to_account_infos();
     acc_infos.insert(0, mint_proxy_state);
-    anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds).map_err(Into::into)
+    anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds)
+        .map_err(Into::into)
 }
 
-impl From<ErrorCode> for ProgramError { fn from(code: ErrorCode) -> Self { ProgramError::Custom(10) } }
+impl From<ErrorCode> for ProgramError {
+    fn from(code: ErrorCode) -> Self {
+        ProgramError::Custom(10)
+    }
+}
 
 #[program]
 pub mod mint_proxy {
@@ -132,7 +137,10 @@ pub mod mint_proxy {
             minter_info.allowance = allowance;
 
             let (_, nonce) = Pubkey::find_program_address(
-                &[b"anchor".as_ref(), minter_info.minter.key().as_ref()],
+                &[
+                    b"anchor".as_ref(),
+                    minter_info.minter.key().to_bytes().as_ref(),
+                ],
                 &crate::ID,
             );
             minter_info.__nonce = nonce;
