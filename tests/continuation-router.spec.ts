@@ -352,6 +352,7 @@ describe("Router", () => {
         await tx.confirm();
       } catch (e) {
         // TODO(igm): error should be parsed for the IDL errors
+        expect(e).to.not.be.null;
       }
 
       expect(
