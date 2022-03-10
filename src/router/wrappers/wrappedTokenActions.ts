@@ -203,7 +203,6 @@ export class WrappedTokenActions {
       underlying: TransactionInstruction | null;
       wrapped: TransactionInstruction | null;
     };
-    bump: number;
   }> {
     const mint = this.wrapped.mintAccount;
     invariant(mint, "token not initialized");
@@ -217,11 +216,6 @@ export class WrappedTokenActions {
         owner: this.program.provider.wallet.publicKey,
       });
 
-    const [_, bump] = await WrappedToken.getAddressAndNonce(
-      this.program.programId,
-      this.wrapped.underlying.mintAccount,
-      this.wrapped.decimals
-    );
     return {
       instructions,
       accounts: {
@@ -235,7 +229,6 @@ export class WrappedTokenActions {
         tokenProgram: TOKEN_PROGRAM_ID,
       },
       createAccountInstructions,
-      bump,
     };
   }
 }
