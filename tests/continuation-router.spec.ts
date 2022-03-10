@@ -615,9 +615,7 @@ describe("Router", () => {
           ]
         );
         const tx = await plan.buildTX();
-
-        const receipt = await tx.confirm();
-        receipt.printLogs();
+        await expectTX(tx, "execute plan").to.be.fulfilled;
 
         expect(await balanceOf(provider, wbtc, user)).to.tokenAmount.zero();
         expect(await balanceOf(provider, wbtc8, user)).to.tokenAmount.equal(
