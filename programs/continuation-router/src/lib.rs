@@ -317,7 +317,6 @@ pub struct Begin<'info> {
 
 /// Begins a route.
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct BeginV2<'info> {
     /// Continuation state.
     #[account(zero)]

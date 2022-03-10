@@ -185,7 +185,6 @@ pub struct ReadonlyTokenPair<'info> {
 
 /// Accounts for [redeemer::create_redeemer]
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct CreateRedeemer<'info> {
     /// Redeemer PDA.
     #[account(
