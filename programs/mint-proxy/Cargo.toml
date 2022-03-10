@@ -20,9 +20,9 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-anchor-lang = ">=0.17"
-anchor-spl = ">=0.17"
+anchor-lang = ">=0.22.1"
+anchor-spl = ">=0.22.1"
 bytemuck = "1.4.0"
-vipers = "1.5.5"
+vipers = "2.0.1"
 spl-token = { version = "3.1.1", features = ["no-entrypoint"] }
 static-pubkey = "1.0.2"

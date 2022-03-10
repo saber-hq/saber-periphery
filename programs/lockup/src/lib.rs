@@ -87,7 +87,7 @@ pub mod lockup {
             release.outstanding = release_amount;
 
             let (_, nonce) = Pubkey::find_program_address(
-                &[b"anchor".as_ref(), release.beneficiary.key().as_ref()],
+                &[b"anchor".as_ref(), release.beneficiary.as_ref()],
                 &crate::ID,
             );
             release.__nonce = nonce;
@@ -106,7 +106,7 @@ pub mod lockup {
 
         /// Revokes a [Release].
         #[access_control(check_auth(self, &ctx.accounts.auth))]
-        pub fn revoke_release(&self, ctx: Context<RevokeRelease>) -> ProgramResult {
+        pub fn revoke_release(&self, ctx: Context<RevokeRelease>) -> Result<()> {
             require!(
                 ctx.accounts.release.outstanding == ctx.accounts.release.start_balance,
                 ReleaseAlreadyRedeemedFrom
@@ -134,7 +134,7 @@ pub mod lockup {
         }
 
         /// Withdraws all available [Release] tokens.
-        pub fn withdraw(&self, ctx: Context<Withdraw>) -> ProgramResult {
+        pub fn withdraw(&self, ctx: Context<Withdraw>) -> Result<()> {
             ctx.accounts.validate()?;
 
             // calculate amount to withdraw
@@ -237,7 +237,7 @@ pub mod lockup {
     }
 
     /// Convenience function for UI's to calculate the withdrawable amount.
-    pub fn available_for_withdrawal(ctx: Context<AvailableForWithdrawal>) -> ProgramResult {
+    pub fn available_for_withdrawal(ctx: Context<AvailableForWithdrawal>) -> Result<()> {
         let available = calculator::available_for_withdrawal(
             &ctx.accounts.release,
             ctx.accounts.clock.unix_timestamp,
@@ -275,13 +275,7 @@ pub struct CreateRelease<'info> {
             b"anchor".as_ref(),
             beneficiary.key().as_ref()
         ],
-        bump = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                beneficiary.key().as_ref()
-            ],
-            &crate::ID
-        ).1,
+        bump,
         payer = payer
     )]
     pub release: Account<'info, Release>,
@@ -338,7 +332,7 @@ pub struct Withdraw<'info> {
 }
 
 impl<'info> Withdraw<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         // proxy_mint_authority validations
         require!(
             self.proxy_mint_authority.key() == self.mint_proxy_state.proxy_mint_authority,
@@ -466,7 +460,7 @@ pub struct WithdrawEvent {
     pub timestamp: i64,
 }
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("The provided beneficiary was not valid.")]
     InvalidBeneficiary,
@@ -515,3 +509,6 @@ pub enum ErrorCode {
 pub fn is_valid_schedule(start_ts: i64, end_ts: i64) -> bool {
     end_ts > start_ts
 }
+
+// ?!?
+impl From<ErrorCode> for ProgramError { fn from(code: ErrorCode) -> Self { ProgramError::Custom(code.into()) } }

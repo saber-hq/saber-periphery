@@ -41,7 +41,7 @@ pub mod continuation_router {
     use super::*;
 
     /// Creates an ATA if it does not yet exist.
-    pub fn create_ata_if_not_exists(ctx: Context<CreateATAIfNotExists>) -> ProgramResult {
+    pub fn create_ata_if_not_exists(ctx: Context<CreateATAIfNotExists>) -> Result<()> {
         if !ctx.accounts.ata.try_borrow_data()?.is_empty() {
             // ata already exists.
             return Ok(());
@@ -67,7 +67,7 @@ pub mod continuation_router {
         amount_in: u64,
         minimum_amount_out: u64,
         num_steps: u16,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let continuation = &mut ctx.accounts.continuation;
         continuation.owner = *ctx.accounts.owner.key;
         continuation.payer = *ctx.accounts.payer.key;
@@ -102,7 +102,7 @@ pub mod continuation_router {
         amount_in: u64,
         minimum_amount_out: u64,
         num_steps: u16,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let continuation = &mut ctx.accounts.continuation;
         continuation.owner = ctx.accounts.owner.key();
         continuation.payer = ctx.accounts.owner.key();
@@ -120,7 +120,7 @@ pub mod continuation_router {
     }
 
     /// Cleans up the transaction and checks several invariants.
-    pub fn end(ctx: Context<End>) -> ProgramResult {
+    pub fn end(ctx: Context<End>) -> Result<()> {
         let continuation = &ctx.accounts.continuation;
         require!(continuation.steps_left == 0, EndIncomplete);
 
@@ -153,37 +153,37 @@ pub mod continuation_router {
         Ok(())
     }
 
-    pub fn ss_swap<'info>(ctx: Context<'_, '_, '_, 'info, SSSwapAccounts<'info>>) -> ProgramResult {
+    pub fn ss_swap<'info>(ctx: Context<'_, '_, '_, 'info, SSSwapAccounts<'info>>) -> Result<()> {
         process_action!(ctx)
     }
 
     pub fn ss_withdraw_one<'info>(
         ctx: Context<'_, '_, '_, 'info, SSWithdrawOneAccounts<'info>>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         process_action!(ctx)
     }
 
     pub fn ss_deposit_a<'info>(
         ctx: Context<'_, '_, '_, 'info, SSDepositAAccounts<'info>>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         process_action!(ctx)
     }
 
     pub fn ss_deposit_b<'info>(
         ctx: Context<'_, '_, '_, 'info, SSDepositBAccounts<'info>>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         process_action!(ctx)
     }
 
     pub fn ad_withdraw<'info>(
         ctx: Context<'_, '_, '_, 'info, ADWithdrawAccounts<'info>>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         process_action!(ctx)
     }
 
     pub fn ad_deposit<'info>(
         ctx: Context<'_, '_, '_, 'info, ADDepositAccounts<'info>>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         process_action!(ctx)
     }
 }
@@ -292,15 +292,7 @@ pub struct Begin<'info> {
             owner.key().as_ref(),
             random.key().as_ref()
         ],
-        bump = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                owner.key().as_ref(),
-                random.key().as_ref(),
-            ],
-            &crate::ID,
-        )
-        .1,
+        bump,
         payer = payer
     )]
     pub continuation: Box<Account<'info, Continuation>>,
@@ -333,7 +325,6 @@ pub struct Begin<'info> {
 
 /// Begins a route.
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct BeginV2<'info> {
     /// Continuation state.
     #[account(zero)]
@@ -523,7 +514,7 @@ pub struct Continuation {
 /// --------------------------------
 /// Error codes
 /// --------------------------------
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Path input does not match prior output.")]
     PathInputOutputMismatch,
@@ -602,7 +593,7 @@ pub trait RouterActionProcessor<'info, T: Accounts<'info>> {
         action: u16,
         amount_in: u64,
         minimum_amount_out: u64,
-    ) -> ProgramResult;
+    ) -> Result<()>;
 }
 
 /// Represents a swap from one token to another.

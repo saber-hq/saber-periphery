@@ -11,7 +11,7 @@ impl<'info> MutTokenPair<'info> {
         source_account: AccountInfo<'info>,
         source_authority: AccountInfo<'info>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let cpi_accounts = token::Burn {
             mint: self.iou_mint.to_account_info(),
             to: source_account,
@@ -23,7 +23,7 @@ impl<'info> MutTokenPair<'info> {
         Ok(())
     }
 
-    pub fn validate_token_accounts(&self, redeemer: &Account<Redeemer>) -> ProgramResult {
+    pub fn validate_token_accounts(&self, redeemer: &Account<Redeemer>) -> Result<()> {
         assert_keys_eq!(self.iou_mint, redeemer.iou_mint, "iou_mint");
         assert_keys_eq!(
             self.redemption_mint,
