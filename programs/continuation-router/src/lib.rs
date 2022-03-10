@@ -10,6 +10,7 @@ use continuation_router_syn::router_action;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Token, TokenAccount};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
+use vipers::prelude::*;
 
 pub mod action;
 pub mod processor;
@@ -81,16 +82,7 @@ pub mod continuation_router {
         continuation.minimum_amount_out =
             TokenAmount::new(ctx.accounts.output.mint, minimum_amount_out);
         continuation.steps_left = num_steps;
-
-        let (_, nonce) = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                continuation.owner.as_ref(),
-                ctx.accounts.random.key().as_ref(),
-            ],
-            &crate::ID,
-        );
-        continuation.__nonce = nonce;
+        continuation.__nonce = *unwrap_int!(ctx.bumps.get("continuation"));
 
         Ok(())
     }
@@ -292,15 +284,7 @@ pub struct Begin<'info> {
             owner.key().as_ref(),
             random.key().as_ref()
         ],
-        bump = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                owner.key().as_ref(),
-                random.key().as_ref(),
-            ],
-            &crate::ID,
-        )
-        .1,
+        bump,
         payer = payer
     )]
     pub continuation: Box<Account<'info, Continuation>>,

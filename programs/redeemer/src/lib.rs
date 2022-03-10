@@ -8,7 +8,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
-use vipers::validate::Validate;
+use vipers::prelude::*;
 
 mod account_validators;
 mod macros;
@@ -23,10 +23,10 @@ pub mod redeemer {
 
     /// Initializes the [Redeemer].
     #[access_control(ctx.accounts.validate())]
-    pub fn create_redeemer(ctx: Context<CreateRedeemer>, bump: u8) -> Result<()> {
+    pub fn create_redeemer(ctx: Context<CreateRedeemer>, _bump: u8) -> Result<()> {
         let tokens = &ctx.accounts.tokens;
         let redeemer = &mut ctx.accounts.redeemer;
-        redeemer.bump = bump;
+        redeemer.bump = *unwrap_int!(ctx.bumps.get("redeemer"));
         redeemer.iou_mint = tokens.iou_mint.key();
         redeemer.redemption_mint = tokens.redemption_mint.key();
         redeemer.redemption_vault = tokens.redemption_vault.key();
@@ -195,7 +195,7 @@ pub struct CreateRedeemer<'info> {
             tokens.iou_mint.to_account_info().key.as_ref(),
             tokens.redemption_mint.to_account_info().key.as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer
     )]
     pub redeemer: Account<'info, Redeemer>,

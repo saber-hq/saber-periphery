@@ -35,7 +35,11 @@ pub trait Processor<'info>: ActionInputOutput<'info> {
         invariant!(continuation.steps_left > 0, NoMoreSteps);
 
         let input_account = self.input_account();
-        assert_keys_eq!(input_account, continuation.input, PathInputOutputMismatch);
+        assert_keys_eq!(
+            input_account.key(),
+            continuation.input,
+            PathInputOutputMismatch
+        );
         assert_keys_eq!(input_account.owner, continuation.owner, InputOwnerMismatch);
         assert_keys_eq!(
             input_account.mint,

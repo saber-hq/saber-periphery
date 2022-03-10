@@ -56,7 +56,6 @@ impl<'info> Validate<'info> for RedeemTokensFromMintProxy<'info> {
             "redemption_mint"
         );
 
-        assert_keys_eq!(self.mint_proxy_program, mint_proxy::ID);
         assert_keys_eq!(
             self.proxy_mint_authority,
             self.mint_proxy_state.proxy_mint_authority,

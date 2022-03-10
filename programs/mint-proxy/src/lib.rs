@@ -4,8 +4,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program;
 use anchor_spl::token::{self, Mint, SetAuthority, Token, TokenAccount};
-use vipers::assert_keys_eq;
-use vipers::unwrap_or_err;
+use vipers::prelude::*;
 
 mod proxy_seeds;
 
@@ -38,14 +37,9 @@ pub fn invoke_perform_mint<'a, 'b, 'c, 'info>(
     };
     let mut acc_infos = ctx.to_account_infos();
     acc_infos.insert(0, mint_proxy_state);
-    anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds)
-        .map_err(Into::into)
-}
+    anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds)?;
 
-impl From<ErrorCode> for ProgramError {
-    fn from(code: ErrorCode) -> Self {
-        ProgramError::Custom(10)
-    }
+    Ok(())
 }
 
 #[program]
@@ -135,15 +129,7 @@ pub mod mint_proxy {
             let minter_info = &mut ctx.accounts.minter_info;
             minter_info.minter = ctx.accounts.minter.key();
             minter_info.allowance = allowance;
-
-            let (_, nonce) = Pubkey::find_program_address(
-                &[
-                    b"anchor".as_ref(),
-                    minter_info.minter.key().to_bytes().as_ref(),
-                ],
-                &crate::ID,
-            );
-            minter_info.__nonce = nonce;
+            minter_info.__nonce = *unwrap_int!(ctx.bumps.get("minter_info"));
             Ok(())
         }
 
@@ -168,14 +154,10 @@ pub mod mint_proxy {
             let minter_info = &mut ctx.accounts.minter_info;
             require!(minter_info.allowance >= amount, MinterAllowanceExceeded);
 
-            let new_supply = unwrap_or_err!(
-                ctx.accounts.token_mint.supply.checked_add(amount),
-                U64Overflow
-            );
+            let new_supply = unwrap_int!(ctx.accounts.token_mint.supply.checked_add(amount),);
             require!(new_supply <= self.hard_cap, HardcapExceeded);
 
-            minter_info.allowance =
-                unwrap_or_err!(minter_info.allowance.checked_sub(amount), U64Overflow);
+            minter_info.allowance = unwrap_int!(minter_info.allowance.checked_sub(amount));
             let seeds = proxy_seeds::gen_signer_seeds(&self.nonce, &self.state_associated_account);
             let proxy_signer = &[&seeds[..]];
             let cpi_ctx = CpiContext::new_with_signer(

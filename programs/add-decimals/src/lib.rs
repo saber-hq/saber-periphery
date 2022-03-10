@@ -9,8 +9,8 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use continuation_router::{ActionType, RouterActionProcessor};
-use vipers::{assert_keys_eq, invariant, unwrap_int, Validate};
-use vipers::{program_err, try_or_err, unwrap_or_err};
+use vipers::prelude::*;
+use vipers::program_err;
 
 mod events;
 mod transfer;
@@ -40,7 +40,7 @@ pub mod add_decimals {
     /// 3. Initialize a mint for the wrapper. It is recommended to use a vanity address via `solana-keygen grind`.
     /// 4. Run the initialize_wrapper instruction.
     #[access_control(ctx.accounts.validate())]
-    pub fn initialize_wrapper(ctx: Context<InitializeWrapper>, nonce: u8) -> Result<()> {
+    pub fn initialize_wrapper(ctx: Context<InitializeWrapper>, _nonce: u8) -> Result<()> {
         let decimals = ctx.accounts.wrapper_mint.decimals;
         require!(
             decimals >= ctx.accounts.underlying_mint.decimals,
@@ -49,13 +49,10 @@ pub mod add_decimals {
 
         let added_decimals =
             unwrap_int!(decimals.checked_sub(ctx.accounts.underlying_mint.decimals));
-        let multiplier = unwrap_or_err!(
-            10u64.checked_pow(added_decimals as u32),
-            InitMultiplierOverflow
-        );
+        let multiplier = unwrap_int!(10u64.checked_pow(added_decimals as u32));
 
         let wrapper = &mut ctx.accounts.wrapper;
-        wrapper.__nonce = nonce;
+        wrapper.__nonce = *unwrap_int!(ctx.bumps.get("wrapper"));
         wrapper.decimals = decimals;
         wrapper.multiplier = multiplier;
         wrapper.wrapper_underlying_mint = ctx.accounts.underlying_mint.key();
@@ -82,10 +79,7 @@ pub mod add_decimals {
             InsufficientUnderlyingBalance
         );
 
-        let mint_amount = unwrap_or_err!(
-            ctx.accounts.wrapper.to_wrapped_amount(deposit_amount),
-            MintAmountOverflow
-        );
+        let mint_amount = unwrap_int!(ctx.accounts.wrapper.to_wrapped_amount(deposit_amount));
 
         // Deposit underlying and mint wrapped
         ctx.accounts.deposit_underlying(deposit_amount)?;
@@ -111,14 +105,9 @@ pub mod add_decimals {
         );
 
         // Compute true withdraw amount
-        let withdraw_amount = unwrap_or_err!(
-            ctx.accounts.wrapper.to_underlying_amount(max_burn_amount),
-            InvalidWithdrawAmount
-        );
-        let burn_amount = unwrap_or_err!(
-            ctx.accounts.wrapper.to_wrapped_amount(withdraw_amount),
-            InvalidBurnAmount
-        );
+        let withdraw_amount =
+            unwrap_int!(ctx.accounts.wrapper.to_underlying_amount(max_burn_amount),);
+        let burn_amount = unwrap_int!(ctx.accounts.wrapper.to_wrapped_amount(withdraw_amount),);
         let dust_amount = unwrap_int!(max_burn_amount.checked_sub(burn_amount));
 
         // Burn wrapped and withdraw underlying
@@ -179,7 +168,7 @@ pub struct InitializeWrapper<'info> {
             underlying_mint.to_account_info().key.as_ref(),
             &[wrapper_mint.decimals]
         ],
-        bump = nonce,
+        bump,
         payer = payer
     )]
     pub wrapper: Account<'info, WrappedToken>,

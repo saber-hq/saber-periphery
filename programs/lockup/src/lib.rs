@@ -20,7 +20,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
-use vipers::unwrap_or_err;
+use vipers::prelude::*;
 
 pub mod calculator;
 
@@ -85,12 +85,7 @@ pub mod lockup {
             release.start_ts = start_ts;
             release.created_ts = Clock::get()?.unix_timestamp;
             release.outstanding = release_amount;
-
-            let (_, nonce) = Pubkey::find_program_address(
-                &[b"anchor".as_ref(), release.beneficiary.key().as_ref()],
-                &crate::ID,
-            );
-            release.__nonce = nonce;
+            release.__nonce = *unwrap_int!(ctx.bumps.get("release"));
 
             emit!(ReleaseCreatedEvent {
                 beneficiary: release.beneficiary,
@@ -169,8 +164,7 @@ pub mod lockup {
 
             // Bookkeeping.
             let release = &mut ctx.accounts.release;
-            release.outstanding =
-                unwrap_or_err!(release.outstanding.checked_sub(amount), U64Overflow);
+            release.outstanding = unwrap_int!(release.outstanding.checked_sub(amount));
 
             emit!(WithdrawEvent {
                 beneficiary: release.beneficiary,
@@ -221,8 +215,7 @@ pub mod lockup {
 
             let release = &mut ctx.accounts.release;
             // Bookkeeping.
-            release.outstanding =
-                unwrap_or_err!(release.outstanding.checked_sub(amount), U64Overflow);
+            release.outstanding = unwrap_int!(release.outstanding.checked_sub(amount));
 
             emit!(WithdrawEvent {
                 beneficiary: release.beneficiary,
@@ -275,13 +268,7 @@ pub struct CreateRelease<'info> {
             b"anchor".as_ref(),
             beneficiary.key().as_ref()
         ],
-        bump = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                beneficiary.key().as_ref()
-            ],
-            &crate::ID
-        ).1,
+        bump,
         payer = payer
     )]
     pub release: Account<'info, Release>,
