@@ -11,7 +11,7 @@ pub trait ProcessAction<'info>: Sized {
         ctx: &ActionContext<'_, '_, '_, 'info, Self>,
         amount_in: u64,
         minimum_amount_out: u64,
-    ) -> ProgramResult;
+    ) -> Result<()>;
 
     fn input_account(&self) -> &Account<'info, TokenAccount>;
 

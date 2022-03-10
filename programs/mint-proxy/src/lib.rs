@@ -24,7 +24,7 @@ pub fn invoke_perform_mint<'a, 'b, 'c, 'info>(
     ctx: CpiContext<'a, 'b, 'c, 'info, crate::cpi::accounts::PerformMint<'info>>,
     mint_proxy_state: AccountInfo<'info>,
     amount: u64,
-) -> ProgramResult {
+) -> Result<()> {
     let ix = {
         let ix = crate::instruction::state::PerformMint { amount };
         let data = anchor_lang::InstructionData::data(&ix);
@@ -38,8 +38,10 @@ pub fn invoke_perform_mint<'a, 'b, 'c, 'info>(
     };
     let mut acc_infos = ctx.to_account_infos();
     acc_infos.insert(0, mint_proxy_state);
-    anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds)
+    anchor_lang::solana_program::program::invoke_signed(&ix, &acc_infos, ctx.signer_seeds).map_err(Into::into)
 }
+
+impl From<ErrorCode> for ProgramError { fn from(code: ErrorCode) -> Self { ProgramError::Custom(10) } }
 
 #[program]
 pub mod mint_proxy {
@@ -124,7 +126,7 @@ pub mod mint_proxy {
 
         /// Adds a minter to the mint proxy.
         #[access_control(only_owner(self, &ctx.accounts.auth))]
-        pub fn minter_add(&self, ctx: Context<MinterAdd>, allowance: u64) -> ProgramResult {
+        pub fn minter_add(&self, ctx: Context<MinterAdd>, allowance: u64) -> Result<()> {
             let minter_info = &mut ctx.accounts.minter_info;
             minter_info.minter = ctx.accounts.minter.key();
             minter_info.allowance = allowance;
@@ -139,7 +141,7 @@ pub mod mint_proxy {
 
         /// Updates a mint's allowance.
         #[access_control(only_owner(self, &ctx.accounts.auth))]
-        pub fn minter_update(&self, ctx: Context<MinterUpdate>, allowance: u64) -> ProgramResult {
+        pub fn minter_update(&self, ctx: Context<MinterUpdate>, allowance: u64) -> Result<()> {
             let minter_info = &mut ctx.accounts.minter_info;
             minter_info.allowance = allowance;
             Ok(())
@@ -147,12 +149,12 @@ pub mod mint_proxy {
 
         /// Removes a minter from the list.
         #[access_control(only_owner(self, &ctx.accounts.auth))]
-        pub fn minter_remove(&self, ctx: Context<MinterRemove>) -> ProgramResult {
+        pub fn minter_remove(&self, ctx: Context<MinterRemove>) -> Result<()> {
             Ok(())
         }
 
         /// Performs a mint.
-        pub fn perform_mint(&self, ctx: Context<PerformMint>, amount: u64) -> ProgramResult {
+        pub fn perform_mint(&self, ctx: Context<PerformMint>, amount: u64) -> Result<()> {
             ctx.accounts.validate(self)?;
 
             let minter_info = &mut ctx.accounts.minter_info;
@@ -263,13 +265,7 @@ pub struct MinterAdd<'info> {
             b"anchor".as_ref(),
             minter.key().as_ref()
         ],
-        bump = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                minter.key().as_ref()
-            ],
-            &crate::ID
-        ).1,
+        bump,
         payer = payer
     )]
     pub minter_info: Account<'info, MinterInfo>,
@@ -338,7 +334,7 @@ pub struct PerformMint<'info> {
 }
 
 impl<'info> PerformMint<'info> {
-    fn validate(&self, state: &MintProxy) -> ProgramResult {
+    fn validate(&self, state: &MintProxy) -> Result<()> {
         assert_keys_eq!(self.proxy_mint_authority, PROXY_MINT_AUTHORITY);
         require!(self.minter.is_signer, Unauthorized);
         assert_keys_eq!(self.minter_info.minter, self.minter);
@@ -387,7 +383,7 @@ fn new_set_authority_cpi_context<'a, 'b, 'c, 'info>(
 }
 
 /// Errors
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("You are not authorized to perform this action.")]
     Unauthorized,

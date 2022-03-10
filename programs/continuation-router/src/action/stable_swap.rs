@@ -36,7 +36,7 @@ impl<'info> ProcessAction<'info> for SSDepositA<'info> {
         ctx: &ActionContext<'_, '_, '_, 'info, Self>,
         amount_in: u64,
         minimum_amount_out: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let deposit = ctx.action;
         let cpi_accounts = stable_swap_anchor::Deposit {
             user: build_swap_context!(deposit, ctx),
@@ -64,7 +64,7 @@ impl<'info> ProcessAction<'info> for SSDepositB<'info> {
         ctx: &ActionContext<'_, '_, '_, 'info, Self>,
         amount_in: u64,
         minimum_amount_out: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let deposit = ctx.action;
         let cpi_accounts = stable_swap_anchor::Deposit {
             user: build_swap_context!(deposit, ctx),
@@ -92,7 +92,7 @@ impl<'info> ProcessAction<'info> for SSWithdrawOne<'info> {
         ctx: &ActionContext<'_, '_, '_, 'info, Self>,
         amount_in: u64,
         minimum_amount_out: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let action = ctx.action;
         let cpi_accounts = stable_swap_anchor::WithdrawOne {
             user: build_swap_context!(action, ctx),
@@ -120,7 +120,7 @@ impl<'info> ProcessAction<'info> for SSSwap<'info> {
         ctx: &ActionContext<'_, '_, '_, 'info, Self>,
         amount_in: u64,
         minimum_amount_out: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let action = ctx.action;
         let cpi_accounts = stable_swap_anchor::Swap {
             user: build_swap_context!(action, ctx),

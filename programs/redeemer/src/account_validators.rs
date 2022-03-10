@@ -4,7 +4,7 @@ use vipers::validate::Validate;
 use vipers::{assert_keys_eq, invariant};
 
 impl<'info> Validate<'info> for CreateRedeemer<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         self.tokens.validate()?;
 
         assert_keys_eq!(self.tokens.redemption_vault.owner, self.redeemer);
@@ -20,7 +20,7 @@ impl<'info> Validate<'info> for CreateRedeemer<'info> {
 }
 
 impl<'info> Validate<'info> for RedeemTokens<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         self.tokens.validate()?;
         self.tokens.validate_token_accounts(&self.redeemer)?;
 
@@ -42,7 +42,7 @@ impl<'info> Validate<'info> for RedeemTokens<'info> {
 }
 
 impl<'info> Validate<'info> for RedeemTokensFromMintProxy<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         self.redeem_ctx.validate()?;
 
         assert_keys_eq!(
@@ -68,7 +68,7 @@ impl<'info> Validate<'info> for RedeemTokensFromMintProxy<'info> {
 }
 
 impl<'info> Validate<'info> for ReadonlyTokenPair<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         require!(
             self.iou_mint.decimals == self.redemption_mint.decimals,
             DecimalsMismatch
@@ -80,7 +80,7 @@ impl<'info> Validate<'info> for ReadonlyTokenPair<'info> {
 }
 
 impl<'info> Validate<'info> for MutTokenPair<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.redemption_vault.mint, self.redemption_mint);
 
         Ok(())
