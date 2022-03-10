@@ -4,7 +4,6 @@ import * as anchor from "@project-serum/anchor";
 import { expectTX } from "@saberhq/chai-solana";
 import * as serumCmn from "@saberhq/token-utils";
 import { getOrCreateATA, u64 } from "@saberhq/token-utils";
-import type { SendTransactionError } from "@solana/web3.js";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import * as assert from "assert";
 import { expect } from "chai";
@@ -375,16 +374,6 @@ describe("MintProxy", () => {
       });
 
       it("Withdraws from the release account with amount", async () => {
-        const startTs = new BN(Math.floor(Date.now() / 1000));
-        const endTs = new BN(startTs.toNumber() + 5);
-        const { tx: createTx } = await lockup.createReleaseForBeneficiary({
-          amount: RELEASE_AMOUNT,
-          startTs,
-          endTs,
-          beneficiary: beneficiary.publicKey,
-        });
-        await expectTX(createTx, "create release").to.be.fulfilled;
-
         const initialReleaseAccount = await lockup.fetchRelease(
           beneficiary.publicKey
         );
