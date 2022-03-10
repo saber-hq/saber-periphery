@@ -14,6 +14,5 @@ export type RedeemerTypes = AnchorTypes<
 type Accounts = RedeemerTypes["Accounts"];
 export type RedeemerData = Accounts["Redeemer"];
 
-export type RedeemerError = RedeemerTypes["Error"];
 export type RedeemerEvents = RedeemerTypes["Events"];
 export type RedeemerProgram = RedeemerTypes["Program"];

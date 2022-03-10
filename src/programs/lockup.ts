@@ -12,10 +12,7 @@ export type LockupTypes = AnchorTypes<
 >;
 
 type Accounts = LockupTypes["Accounts"];
-
 export type ReleaseData = Accounts["Release"];
-
-export type LockupError = LockupTypes["Error"];
 
 export type LockupProgram = LockupTypes["Program"];
 

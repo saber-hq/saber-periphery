@@ -1,7 +1,7 @@
 /// <reference types="mocha" />
 
 import * as anchor from "@project-serum/anchor";
-import { assertError, expectTX } from "@saberhq/chai-solana";
+import { expectTX } from "@saberhq/chai-solana";
 import * as serumCmn from "@saberhq/token-utils";
 import { getOrCreateATA, u64 } from "@saberhq/token-utils";
 import { Keypair, PublicKey } from "@solana/web3.js";
@@ -9,8 +9,7 @@ import * as assert from "assert";
 import { expect } from "chai";
 import invariant from "tiny-invariant";
 
-import type { LockupError, ReleaseData } from "../src";
-import { LockupErrors } from "../src";
+import type { ReleaseData } from "../src";
 import { getRewardsMint } from "./_beforeAll.spec";
 import { DEFAULT_HARD_CAP, makeSDK } from "./workspace";
 
@@ -297,13 +296,14 @@ describe("MintProxy", () => {
 
       it("Fails to withdraw from a release account before release", async () => {
         const tx = await lockup.withdraw();
-        await assert.rejects(async () => {
-          await tx.confirm(),
-            (err: LockupError) => {
-              assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-              return true;
-            };
-        });
+        await expectTX(tx, "withdraw from lock").to.be.rejectedWith("0x");
+        // await assert.rejects(async () => {
+        //   await tx.confirm(),
+        //     (err: LockupError) => {
+        //       assertError(err, LockupErrors.InsufficientWithdrawalBalance);
+        //       return true;
+        //     };
+        // });
       });
 
       it("Fails to withdraw from a release account before release with amount", async () => {
@@ -311,13 +311,14 @@ describe("MintProxy", () => {
           provider.wallet.publicKey,
           new BN(100)
         );
-        await assert.rejects(async () => {
-          await tx.confirm(),
-            (err: LockupError) => {
-              assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-              return true;
-            };
-        });
+        await expectTX(tx, "withdraw from lock").to.be.rejectedWith("0x");
+        // await assert.rejects(async () => {
+        //   await tx.confirm(),
+        //     (err: LockupError) => {
+        //       assertError(err, LockupErrors.InsufficientWithdrawalBalance);
+        //       return true;
+        //     };
+        // });
       });
 
       it("Withdraws from the release account", async () => {
@@ -434,13 +435,17 @@ describe("MintProxy", () => {
           provider.wallet.publicKey,
           withdrawAmount
         );
-        await assert.rejects(async () => {
-          await withdrawAgainTx.confirm(),
-            (err: LockupError) => {
-              assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-              return true;
-            };
-        });
+        await expectTX(
+          withdrawAgainTx,
+          "withdraw again should fail"
+        ).to.be.rejectedWith("0x");
+        // await assert.rejects(async () => {
+        //   await withdrawAgainTx.confirm(),
+        //     (err: LockupError) => {
+        //       assertError(err, LockupErrors.InsufficientWithdrawalBalance);
+        //       return true;
+        //     };
+        // });
       });
     });
   });
