@@ -292,26 +292,43 @@ describe("MintProxy", () => {
         }
 
         beneficiaryTokenAccountAddress = address;
+
+        const startTs = new BN(Math.floor(Date.now() / 1000));
+        const endTs = new BN(startTs.toNumber() + 5);
+        const { tx: createTx } = await lockup.createReleaseForBeneficiary({
+          amount: RELEASE_AMOUNT,
+          startTs,
+          endTs,
+          beneficiary: beneficiary.publicKey,
+        });
+        await expectTX(createTx, "create release").to.be.fulfilled;
       });
 
-      it("Fails to withdraw from a release account before release", async () => {
-        const tx = await lockup.withdraw();
-        await expectTX(tx, "withdraw from lock").to.be.rejectedWith("0x");
-        // await assert.rejects(async () => {
-        //   await tx.confirm(),
-        //     (err: LockupError) => {
-        //       assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-        //       return true;
-        //     };
-        // });
+      it("Withdraw amount should be zero when trying to withdraw before release", async () => {
+        const tx = await lockup.withdraw(beneficiary.publicKey);
+        tx.addSigners(beneficiary);
+        await expectTX(tx, "withdraw from lockup").to.be.be.fulfilled;
+
+        const benefiaryTokenAccount = await serumCmn.getTokenAccount(
+          sdk.provider,
+          beneficiaryTokenAccountAddress
+        );
+        expect(benefiaryTokenAccount.amount).to.be.bignumber.eq(new BN(0));
+        const releaseAccount = await lockup.fetchRelease(beneficiary.publicKey);
+        expect(releaseAccount?.outstanding).to.be.bignumber.eq(RELEASE_AMOUNT);
       });
 
       it("Fails to withdraw from a release account before release with amount", async () => {
-        const tx = await lockup.withdraw(
-          provider.wallet.publicKey,
-          new BN(100)
+        const tx = await lockup.withdraw(beneficiary.publicKey, new BN(100));
+        tx.addSigners(beneficiary);
+        console.log(
+          "Fails to withdraw from a release account before release with amount",
+          await tx.simulate()
         );
-        await expectTX(tx, "withdraw from lock").to.be.rejectedWith("0x");
+        await expectTX(
+          tx,
+          "withdraw from lockup with amount"
+        ).to.be.rejectedWith("0x");
         // await assert.rejects(async () => {
         //   await tx.confirm(),
         //     (err: LockupError) => {
@@ -322,16 +339,6 @@ describe("MintProxy", () => {
       });
 
       it("Withdraws from the release account", async () => {
-        const startTs = new BN(Math.floor(Date.now() / 1000));
-        const endTs = new BN(startTs.toNumber() + 5);
-        const { tx: createTx } = await lockup.createReleaseForBeneficiary({
-          amount: RELEASE_AMOUNT,
-          startTs,
-          endTs,
-          beneficiary: beneficiary.publicKey,
-        });
-        await expectTX(createTx, "create release").to.be.fulfilled;
-
         const initialReleaseAccount = await lockup.fetchRelease(
           beneficiary.publicKey
         );
@@ -432,8 +439,13 @@ describe("MintProxy", () => {
 
         // Withdrawing again should fail
         const withdrawAgainTx = await lockup.withdraw(
-          provider.wallet.publicKey,
+          beneficiary.publicKey,
           withdrawAmount
+        );
+        withdrawAgainTx.addSigners(beneficiary);
+        console.log(
+          "withdraw again should fail",
+          await withdrawAgainTx.simulate()
         );
         await expectTX(
           withdrawAgainTx,

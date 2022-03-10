@@ -136,6 +136,12 @@ pub mod lockup {
             let release = &ctx.accounts.release;
             let amount =
                 calculator::available_for_withdrawal(release, Clock::get()?.unix_timestamp);
+
+            // Short circuit if withdraw amount is zero.
+            if amount == 0 {
+                return Ok(());
+            }
+
             require!(
                 ctx.accounts.minter_info.allowance >= amount,
                 MinterAllowanceTooLow
@@ -179,6 +185,11 @@ pub mod lockup {
 
         /// Withdraws tokens from the [Release] with an amount.
         pub fn withdraw_with_amount(&self, ctx: Context<Withdraw>, amount: u64) -> Result<()> {
+            // Short circuit if withdraw amount is zero.
+            if amount == 0 {
+                return Ok(());
+            }
+
             ctx.accounts.validate()?;
 
             let amount_released = calculator::available_for_withdrawal(
