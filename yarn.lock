@@ -1043,23 +1043,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@saberhq/anchor-contrib@npm:^1.12.36":
-  version: 1.12.36
-  resolution: "@saberhq/anchor-contrib@npm:1.12.36"
-  dependencies:
-    "@saberhq/solana-contrib": ^1.12.36
-    eventemitter3: ^4.0.7
-    lodash.camelcase: ^4.3.0
-    lodash.mapvalues: ^4.6.0
-    tslib: ^2.3.1
-  peerDependencies:
-    "@project-serum/anchor": ^0.17 || ^0.18 || ^0.19 || ^0.20
-    "@solana/web3.js": ">=1.29.2"
-    bn.js: ^4 || ^5
-  checksum: 2f8f77acee72dec6211fa86bb3e10b69b3d90e642f6e978f233c84aa690f23c5c11bcefc90a1a6885fa2969460e661797c39d54730ed7f29dd3ee9f54675bd7e
-  languageName: node
-  linkType: hard
-
 "@saberhq/anchor-contrib@npm:^1.12.48":
   version: 1.12.48
   resolution: "@saberhq/anchor-contrib@npm:1.12.48"
@@ -1126,7 +1109,7 @@ __metadata:
   dependencies:
     "@project-serum/anchor": ^0.20.1
     "@rushstack/eslint-patch": ^1.1.0
-    "@saberhq/anchor-contrib": ^1.12.36
+    "@saberhq/anchor-contrib": ^1.12.48
     "@saberhq/chai-solana": ^1.12.48
     "@saberhq/eslint-config": ^1.12.36
     "@saberhq/solana-contrib": ^1.12.48
@@ -1165,23 +1148,6 @@ __metadata:
     bn.js: ^5
   languageName: unknown
   linkType: soft
-
-"@saberhq/solana-contrib@npm:^1.12.36":
-  version: 1.12.36
-  resolution: "@saberhq/solana-contrib@npm:1.12.36"
-  dependencies:
-    "@types/promise-retry": ^1.1.3
-    "@types/retry": ^0.12.1
-    promise-retry: ^2.0.1
-    retry: ^0.13.1
-    tiny-invariant: ^1.2.0
-    tslib: ^2.3.1
-  peerDependencies:
-    "@solana/web3.js": ^1.29.2
-    bn.js: ^4 || ^5
-  checksum: 1c3667d68d40c05bcf47425b740aa5207e2c421497457a52e5187ce5e45587846de6c2ebe2095896fa4b25fc79121bf0db6a697840cfa3ea5cc517fb13e45abe
-  languageName: node
-  linkType: hard
 
 "@saberhq/solana-contrib@npm:^1.12.48":
   version: 1.12.48
