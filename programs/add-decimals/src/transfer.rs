@@ -43,7 +43,7 @@ macro_rules! perform_as_wrapper {
 /// Helper methods for interacting with the user stake.
 impl<'info> UserStake<'info> {
     /// Transfer user's tokens to wrapper.
-    pub fn deposit_underlying(&self, amount: u64) -> ProgramResult {
+    pub fn deposit_underlying(&self, amount: u64) -> Result<()> {
         let cpi_accounts = token::Transfer {
             from: self.user_underlying_tokens.to_account_info(),
             to: self.wrapper_underlying_tokens.to_account_info(),
@@ -53,7 +53,7 @@ impl<'info> UserStake<'info> {
     }
 
     /// Burn user's wrapper tokens.
-    pub fn burn_wrapped(&self, amount: u64) -> ProgramResult {
+    pub fn burn_wrapped(&self, amount: u64) -> Result<()> {
         let cpi_accounts = token::Burn {
             mint: self.wrapper_mint.to_account_info(),
             to: self.user_wrapped_tokens.to_account_info(),
@@ -63,7 +63,7 @@ impl<'info> UserStake<'info> {
     }
 
     /// Mint wrapped tokens to user wrapped token account.
-    pub fn mint_wrapped(&self, amount: u64) -> ProgramResult {
+    pub fn mint_wrapped(&self, amount: u64) -> Result<()> {
         let cpi_accounts = token::MintTo {
             mint: self.wrapper_mint.to_account_info(),
             to: self.user_wrapped_tokens.to_account_info(),
@@ -73,7 +73,7 @@ impl<'info> UserStake<'info> {
     }
 
     /// Transfer underlying tokens from wrapper to user.
-    pub fn withdraw_underlying(&self, amount: u64) -> ProgramResult {
+    pub fn withdraw_underlying(&self, amount: u64) -> Result<()> {
         let cpi_accounts = token::Transfer {
             from: self.wrapper_underlying_tokens.to_account_info(),
             to: self.user_underlying_tokens.to_account_info(),

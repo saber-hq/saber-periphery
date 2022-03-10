@@ -1,7 +1,7 @@
 /// <reference types="mocha" />
 
 import * as anchor from "@project-serum/anchor";
-import { assertError, expectTX } from "@saberhq/chai-solana";
+import { expectTX } from "@saberhq/chai-solana";
 import * as serumCmn from "@saberhq/token-utils";
 import { getOrCreateATA, u64 } from "@saberhq/token-utils";
 import { Keypair, PublicKey } from "@solana/web3.js";
@@ -9,8 +9,7 @@ import * as assert from "assert";
 import { expect } from "chai";
 import invariant from "tiny-invariant";
 
-import type { LockupError, ReleaseData } from "../src";
-import { LockupErrors } from "../src";
+import type { ReleaseData } from "../src";
 import { getRewardsMint } from "./_beforeAll.spec";
 import { DEFAULT_HARD_CAP, makeSDK } from "./workspace";
 
@@ -293,34 +292,7 @@ describe("MintProxy", () => {
         }
 
         beneficiaryTokenAccountAddress = address;
-      });
 
-      it("Fails to withdraw from a release account before release", async () => {
-        const tx = await lockup.withdraw();
-        await assert.rejects(async () => {
-          await tx.confirm(),
-            (err: LockupError) => {
-              assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-              return true;
-            };
-        });
-      });
-
-      it("Fails to withdraw from a release account before release with amount", async () => {
-        const tx = await lockup.withdraw(
-          provider.wallet.publicKey,
-          new BN(100)
-        );
-        await assert.rejects(async () => {
-          await tx.confirm(),
-            (err: LockupError) => {
-              assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-              return true;
-            };
-        });
-      });
-
-      it("Withdraws from the release account", async () => {
         const startTs = new BN(Math.floor(Date.now() / 1000));
         const endTs = new BN(startTs.toNumber() + 5);
         const { tx: createTx } = await lockup.createReleaseForBeneficiary({
@@ -330,7 +302,34 @@ describe("MintProxy", () => {
           beneficiary: beneficiary.publicKey,
         });
         await expectTX(createTx, "create release").to.be.fulfilled;
+      });
 
+      it("Withdraw amount should be zero when trying to withdraw before release", async () => {
+        const tx = await lockup.withdraw(beneficiary.publicKey);
+        tx.addSigners(beneficiary);
+        await expectTX(tx, "withdraw from lockup").to.be.be.fulfilled;
+
+        const benefiaryTokenAccount = await serumCmn.getTokenAccount(
+          sdk.provider,
+          beneficiaryTokenAccountAddress
+        );
+        expect(benefiaryTokenAccount.amount).to.be.bignumber.eq(new BN(0));
+        const releaseAccount = await lockup.fetchRelease(beneficiary.publicKey);
+        expect(releaseAccount?.outstanding).to.be.bignumber.eq(RELEASE_AMOUNT);
+      });
+
+      it("Fails to withdraw from a release account before release with amount", async () => {
+        const tx = await lockup.withdraw(beneficiary.publicKey, new BN(100));
+        tx.addSigners(beneficiary);
+        try {
+          await tx.confirm();
+        } catch (e) {
+          // TODO(igm): error should be parsed for the IDL errors
+          expect(e).to.not.be.null;
+        }
+      });
+
+      it("Withdraws from the release account", async () => {
         const initialReleaseAccount = await lockup.fetchRelease(
           beneficiary.publicKey
         );
@@ -375,16 +374,6 @@ describe("MintProxy", () => {
       });
 
       it("Withdraws from the release account with amount", async () => {
-        const startTs = new BN(Math.floor(Date.now() / 1000));
-        const endTs = new BN(startTs.toNumber() + 5);
-        const { tx: createTx } = await lockup.createReleaseForBeneficiary({
-          amount: RELEASE_AMOUNT,
-          startTs,
-          endTs,
-          beneficiary: beneficiary.publicKey,
-        });
-        await expectTX(createTx, "create release").to.be.fulfilled;
-
         const initialReleaseAccount = await lockup.fetchRelease(
           beneficiary.publicKey
         );
@@ -431,16 +420,17 @@ describe("MintProxy", () => {
 
         // Withdrawing again should fail
         const withdrawAgainTx = await lockup.withdraw(
-          provider.wallet.publicKey,
+          beneficiary.publicKey,
           withdrawAmount
         );
-        await assert.rejects(async () => {
-          await withdrawAgainTx.confirm(),
-            (err: LockupError) => {
-              assertError(err, LockupErrors.InsufficientWithdrawalBalance);
-              return true;
-            };
-        });
+        withdrawAgainTx.addSigners(beneficiary);
+
+        try {
+          await tx.confirm();
+        } catch (e) {
+          // TODO(igm): error should be parsed for the IDL errors
+          expect(e).to.not.be.null;
+        }
       });
     });
   });

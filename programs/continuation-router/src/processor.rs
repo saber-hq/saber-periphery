@@ -27,15 +27,19 @@ pub struct ActionContext<'a, 'b, 'c, 'info, T> {
 
 /// Processes a context.
 pub trait Processor<'info>: ActionInputOutput<'info> {
-    fn process_unchecked(&self, amount_in: u64, minimum_amount_out: u64) -> ProgramResult;
+    fn process_unchecked(&self, amount_in: u64, minimum_amount_out: u64) -> Result<()>;
 
-    fn process(&self, continuation: &mut Account<'info, Continuation>) -> ProgramResult {
+    fn process(&self, continuation: &mut Account<'info, Continuation>) -> Result<()> {
         msg!("Router action: {:?}", Self::TYPE);
         let continuation = continuation;
         invariant!(continuation.steps_left > 0, NoMoreSteps);
 
         let input_account = self.input_account();
-        assert_keys_eq!(input_account, continuation.input, PathInputOutputMismatch);
+        assert_keys_eq!(
+            input_account.key(),
+            continuation.input,
+            PathInputOutputMismatch
+        );
         assert_keys_eq!(input_account.owner, continuation.owner, InputOwnerMismatch);
         assert_keys_eq!(
             input_account.mint,

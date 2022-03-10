@@ -1002,17 +1002,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@project-serum/anchor@npm:^0.20.1":
-  version: 0.20.1
-  resolution: "@project-serum/anchor@npm:0.20.1"
+"@project-serum/anchor@npm:^0.22.1":
+  version: 0.22.1
+  resolution: "@project-serum/anchor@npm:0.22.1"
   dependencies:
-    "@project-serum/borsh": ^0.2.2
+    "@project-serum/borsh": ^0.2.5
     "@solana/web3.js": ^1.17.0
     base64-js: ^1.5.1
     bn.js: ^5.1.2
     bs58: ^4.0.1
     buffer-layout: ^1.2.2
     camelcase: ^5.3.1
+    cross-fetch: ^3.1.5
     crypto-hash: ^1.3.0
     eventemitter3: ^4.0.7
     find: ^0.3.0
@@ -1020,19 +1021,19 @@ __metadata:
     pako: ^2.0.3
     snake-case: ^3.0.4
     toml: ^3.0.0
-  checksum: b5468690df330d72e4cc5461faf3afd43c0383da004d8dda46ba11dbb092c1c754a694e8dd3d9094617040417d38ec1cb486113cfeb4465ce8ff3f184202238f
+  checksum: d4af90220b94e7de68b74693066e03e6b0d917e8eb86d58fcb623c553b3864165c000ea83d69aa301e135569a745e4fa36a76c784473b7c05d032bae18230496
   languageName: node
   linkType: hard
 
-"@project-serum/borsh@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "@project-serum/borsh@npm:0.2.2"
+"@project-serum/borsh@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "@project-serum/borsh@npm:0.2.5"
   dependencies:
     bn.js: ^5.1.2
     buffer-layout: ^1.2.0
   peerDependencies:
     "@solana/web3.js": ^1.2.0
-  checksum: f6ffd5f21cad0cb8a84901dcf21342af73a4b48e2121ba9fd3e1f84b400e66eacb3a7e80ae350a0592f728dea99604c50084ab1455ddf4f3a9d28c8a38bbc188
+  checksum: 7bdc25e8d6cca13166869c8f09db2fabf103e8dc4861f09f277bb0080dfaaed9f50d4b5e2579bc2c975db263faaa92539d5ddb84a2f4d8cf09f3c6e6bddf79e1
   languageName: node
   linkType: hard
 
@@ -1040,23 +1041,6 @@ __metadata:
   version: 1.1.0
   resolution: "@rushstack/eslint-patch@npm:1.1.0"
   checksum: 4602c23454c8bb03502da12398cb5c4c0bfb3b1772535b418ec94ab8c47824f70e6ff32206a35fe7086042d9516959edea439e2371147b1de7eee50ef03ace65
-  languageName: node
-  linkType: hard
-
-"@saberhq/anchor-contrib@npm:^1.12.36":
-  version: 1.12.36
-  resolution: "@saberhq/anchor-contrib@npm:1.12.36"
-  dependencies:
-    "@saberhq/solana-contrib": ^1.12.36
-    eventemitter3: ^4.0.7
-    lodash.camelcase: ^4.3.0
-    lodash.mapvalues: ^4.6.0
-    tslib: ^2.3.1
-  peerDependencies:
-    "@project-serum/anchor": ^0.17 || ^0.18 || ^0.19 || ^0.20
-    "@solana/web3.js": ">=1.29.2"
-    bn.js: ^4 || ^5
-  checksum: 2f8f77acee72dec6211fa86bb3e10b69b3d90e642f6e978f233c84aa690f23c5c11bcefc90a1a6885fa2969460e661797c39d54730ed7f29dd3ee9f54675bd7e
   languageName: node
   linkType: hard
 
@@ -1124,9 +1108,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@saberhq/saber-periphery@workspace:."
   dependencies:
-    "@project-serum/anchor": ^0.20.1
+    "@project-serum/anchor": ^0.22.1
     "@rushstack/eslint-patch": ^1.1.0
-    "@saberhq/anchor-contrib": ^1.12.36
+    "@saberhq/anchor-contrib": ^1.12.48
     "@saberhq/chai-solana": ^1.12.48
     "@saberhq/eslint-config": ^1.12.36
     "@saberhq/solana-contrib": ^1.12.48
@@ -1165,23 +1149,6 @@ __metadata:
     bn.js: ^5
   languageName: unknown
   linkType: soft
-
-"@saberhq/solana-contrib@npm:^1.12.36":
-  version: 1.12.36
-  resolution: "@saberhq/solana-contrib@npm:1.12.36"
-  dependencies:
-    "@types/promise-retry": ^1.1.3
-    "@types/retry": ^0.12.1
-    promise-retry: ^2.0.1
-    retry: ^0.13.1
-    tiny-invariant: ^1.2.0
-    tslib: ^2.3.1
-  peerDependencies:
-    "@solana/web3.js": ^1.29.2
-    bn.js: ^4 || ^5
-  checksum: 1c3667d68d40c05bcf47425b740aa5207e2c421497457a52e5187ce5e45587846de6c2ebe2095896fa4b25fc79121bf0db6a697840cfa3ea5cc517fb13e45abe
-  languageName: node
-  linkType: hard
 
 "@saberhq/solana-contrib@npm:^1.12.48":
   version: 1.12.48
@@ -2719,6 +2686,15 @@ __metadata:
   dependencies:
     node-fetch: 2.6.1
   checksum: 2107e5e633aa327bdacab036b1907c7ddd28651ede0c1d4fd14db04510944d56849a8255e2f5b8f9a1da0e061b6cee943f6819fe29ed9a130195e7fadd82a4ff
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "cross-fetch@npm:3.1.5"
+  dependencies:
+    node-fetch: 2.6.7
+  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
   languageName: node
   linkType: hard
 
@@ -5594,6 +5570,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:2.6.7":
+  version: 2.6.7
+  resolution: "node-fetch@npm:2.6.7"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  languageName: node
+  linkType: hard
+
 "node-gyp-build@npm:^4.2.0":
   version: 4.2.3
   resolution: "node-gyp-build@npm:4.2.3"
@@ -6874,6 +6864,13 @@ resolve@^1.20.0:
   languageName: node
   linkType: hard
 
+"tr46@npm:~0.0.3":
+  version: 0.0.3
+  resolution: "tr46@npm:0.0.3"
+  checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
 "traverse-chain@npm:~0.1.0":
   version: 0.1.0
   resolution: "traverse-chain@npm:0.1.0"
@@ -7186,6 +7183,13 @@ resolve@^1.20.0:
   languageName: node
   linkType: hard
 
+"webidl-conversions@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "webidl-conversions@npm:3.0.1"
+  checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
 "webidl-conversions@npm:^5.0.0":
   version: 5.0.0
   resolution: "webidl-conversions@npm:5.0.0"
@@ -7213,6 +7217,16 @@ resolve@^1.20.0:
   version: 2.3.0
   resolution: "whatwg-mimetype@npm:2.3.0"
   checksum: 23eb885940bcbcca4ff841c40a78e9cbb893ec42743993a42bf7aed16085b048b44b06f3402018931687153550f9a32d259dfa524e4f03577ab898b6965e5383
+  languageName: node
+  linkType: hard
+
+"whatwg-url@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "whatwg-url@npm:5.0.0"
+  dependencies:
+    tr46: ~0.0.3
+    webidl-conversions: ^3.0.0
+  checksum: b8daed4ad3356cc4899048a15b2c143a9aed0dfae1f611ebd55073310c7b910f522ad75d727346ad64203d7e6c79ef25eafd465f4d12775ca44b90fa82ed9e2c
   languageName: node
   linkType: hard
 

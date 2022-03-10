@@ -14,7 +14,6 @@ export type AddDecimalsTypes = AnchorTypes<
 type Accounts = AddDecimalsTypes["Accounts"];
 export type WrappedTokenData = Accounts["WrappedToken"];
 
-export type AddDecimalsError = AddDecimalsTypes["Error"];
 export type AddDecimalsProgram = AddDecimalsTypes["Program"];
 
 export type UserStakeAccounts = Parameters<

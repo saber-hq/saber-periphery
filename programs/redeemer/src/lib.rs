@@ -8,7 +8,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
-use vipers::validate::Validate;
+use vipers::prelude::*;
 
 mod account_validators;
 mod macros;
@@ -23,10 +23,10 @@ pub mod redeemer {
 
     /// Initializes the [Redeemer].
     #[access_control(ctx.accounts.validate())]
-    pub fn create_redeemer(ctx: Context<CreateRedeemer>, bump: u8) -> ProgramResult {
+    pub fn create_redeemer(ctx: Context<CreateRedeemer>, _bump: u8) -> Result<()> {
         let tokens = &ctx.accounts.tokens;
         let redeemer = &mut ctx.accounts.redeemer;
-        redeemer.bump = bump;
+        redeemer.bump = *unwrap_int!(ctx.bumps.get("redeemer"));
         redeemer.iou_mint = tokens.iou_mint.key();
         redeemer.redemption_mint = tokens.redemption_mint.key();
         redeemer.redemption_vault = tokens.redemption_vault.key();
@@ -36,7 +36,7 @@ pub mod redeemer {
 
     /// Redeems some of a user's tokens from the redemption vault.
     #[access_control(ctx.accounts.validate())]
-    pub fn redeem_tokens(ctx: Context<RedeemTokens>, amount: u64) -> ProgramResult {
+    pub fn redeem_tokens(ctx: Context<RedeemTokens>, amount: u64) -> Result<()> {
         ctx.accounts.tokens.burn_iou_tokens(
             ctx.accounts.iou_source.to_account_info(),
             ctx.accounts.source_authority.to_account_info(),
@@ -74,7 +74,7 @@ pub mod redeemer {
     pub fn redeem_tokens_from_mint_proxy(
         ctx: Context<RedeemTokensFromMintProxy>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         ctx.accounts.validate()?;
         ctx.accounts.redeem_ctx.tokens.burn_iou_tokens(
             ctx.accounts.redeem_ctx.iou_source.to_account_info(),
@@ -128,7 +128,7 @@ pub mod redeemer {
     /// Redeems all of a user's tokens against the mint proxy.
     pub fn redeem_all_tokens_from_mint_proxy(
         ctx: Context<RedeemTokensFromMintProxy>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let amount = ctx.accounts.redeem_ctx.iou_source.amount;
         redeem_tokens_from_mint_proxy(ctx, amount)
     }
@@ -195,7 +195,7 @@ pub struct CreateRedeemer<'info> {
             tokens.iou_mint.to_account_info().key.as_ref(),
             tokens.redemption_mint.to_account_info().key.as_ref()
         ],
-        bump = bump,
+        bump,
         payer = payer
     )]
     pub redeemer: Account<'info, Redeemer>,
@@ -262,7 +262,7 @@ pub struct RedeemTokensEvent {
 }
 
 /// Errors.
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Unauthorized.")]
     Unauthorized,

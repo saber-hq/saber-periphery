@@ -20,7 +20,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
-use vipers::unwrap_or_err;
+use vipers::prelude::*;
 
 pub mod calculator;
 
@@ -85,12 +85,7 @@ pub mod lockup {
             release.start_ts = start_ts;
             release.created_ts = Clock::get()?.unix_timestamp;
             release.outstanding = release_amount;
-
-            let (_, nonce) = Pubkey::find_program_address(
-                &[b"anchor".as_ref(), release.beneficiary.key().as_ref()],
-                &crate::ID,
-            );
-            release.__nonce = nonce;
+            release.__nonce = *unwrap_int!(ctx.bumps.get("release"));
 
             emit!(ReleaseCreatedEvent {
                 beneficiary: release.beneficiary,
@@ -106,7 +101,7 @@ pub mod lockup {
 
         /// Revokes a [Release].
         #[access_control(check_auth(self, &ctx.accounts.auth))]
-        pub fn revoke_release(&self, ctx: Context<RevokeRelease>) -> ProgramResult {
+        pub fn revoke_release(&self, ctx: Context<RevokeRelease>) -> Result<()> {
             require!(
                 ctx.accounts.release.outstanding == ctx.accounts.release.start_balance,
                 ReleaseAlreadyRedeemedFrom
@@ -134,13 +129,19 @@ pub mod lockup {
         }
 
         /// Withdraws all available [Release] tokens.
-        pub fn withdraw(&self, ctx: Context<Withdraw>) -> ProgramResult {
+        pub fn withdraw(&self, ctx: Context<Withdraw>) -> Result<()> {
             ctx.accounts.validate()?;
 
             // calculate amount to withdraw
             let release = &ctx.accounts.release;
             let amount =
                 calculator::available_for_withdrawal(release, Clock::get()?.unix_timestamp);
+
+            // Short circuit if withdraw amount is zero.
+            if amount == 0 {
+                return Ok(());
+            }
+
             require!(
                 ctx.accounts.minter_info.allowance >= amount,
                 MinterAllowanceTooLow
@@ -169,8 +170,7 @@ pub mod lockup {
 
             // Bookkeeping.
             let release = &mut ctx.accounts.release;
-            release.outstanding =
-                unwrap_or_err!(release.outstanding.checked_sub(amount), U64Overflow);
+            release.outstanding = unwrap_int!(release.outstanding.checked_sub(amount));
 
             emit!(WithdrawEvent {
                 beneficiary: release.beneficiary,
@@ -185,6 +185,11 @@ pub mod lockup {
 
         /// Withdraws tokens from the [Release] with an amount.
         pub fn withdraw_with_amount(&self, ctx: Context<Withdraw>, amount: u64) -> Result<()> {
+            // Short circuit if withdraw amount is zero.
+            if amount == 0 {
+                return Ok(());
+            }
+
             ctx.accounts.validate()?;
 
             let amount_released = calculator::available_for_withdrawal(
@@ -221,8 +226,7 @@ pub mod lockup {
 
             let release = &mut ctx.accounts.release;
             // Bookkeeping.
-            release.outstanding =
-                unwrap_or_err!(release.outstanding.checked_sub(amount), U64Overflow);
+            release.outstanding = unwrap_int!(release.outstanding.checked_sub(amount));
 
             emit!(WithdrawEvent {
                 beneficiary: release.beneficiary,
@@ -237,7 +241,7 @@ pub mod lockup {
     }
 
     /// Convenience function for UI's to calculate the withdrawable amount.
-    pub fn available_for_withdrawal(ctx: Context<AvailableForWithdrawal>) -> ProgramResult {
+    pub fn available_for_withdrawal(ctx: Context<AvailableForWithdrawal>) -> Result<()> {
         let available = calculator::available_for_withdrawal(
             &ctx.accounts.release,
             ctx.accounts.clock.unix_timestamp,
@@ -275,13 +279,7 @@ pub struct CreateRelease<'info> {
             b"anchor".as_ref(),
             beneficiary.key().as_ref()
         ],
-        bump = Pubkey::find_program_address(
-            &[
-                b"anchor".as_ref(),
-                beneficiary.key().as_ref()
-            ],
-            &crate::ID
-        ).1,
+        bump,
         payer = payer
     )]
     pub release: Account<'info, Release>,
@@ -338,7 +336,7 @@ pub struct Withdraw<'info> {
 }
 
 impl<'info> Withdraw<'info> {
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         // proxy_mint_authority validations
         require!(
             self.proxy_mint_authority.key() == self.mint_proxy_state.proxy_mint_authority,
@@ -466,7 +464,7 @@ pub struct WithdrawEvent {
     pub timestamp: i64,
 }
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("The provided beneficiary was not valid.")]
     InvalidBeneficiary,

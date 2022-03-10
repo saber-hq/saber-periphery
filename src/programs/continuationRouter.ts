@@ -11,8 +11,6 @@ export type ContinuationRouterTypes = AnchorTypes<
   }
 >;
 
-export type ContinuationRouterError = ContinuationRouterTypes["Error"];
-
 export type ContinuationRouterProgram = ContinuationRouterTypes["Program"];
 
 export type ContinuationRouterEvents = ContinuationRouterTypes["Events"];

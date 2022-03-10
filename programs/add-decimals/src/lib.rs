@@ -9,8 +9,8 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use continuation_router::{ActionType, RouterActionProcessor};
-use vipers::{assert_keys_eq, invariant, unwrap_int, Validate};
-use vipers::{program_err, try_or_err, unwrap_or_err};
+use vipers::prelude::*;
+use vipers::program_err;
 
 mod events;
 mod transfer;
@@ -40,7 +40,7 @@ pub mod add_decimals {
     /// 3. Initialize a mint for the wrapper. It is recommended to use a vanity address via `solana-keygen grind`.
     /// 4. Run the initialize_wrapper instruction.
     #[access_control(ctx.accounts.validate())]
-    pub fn initialize_wrapper(ctx: Context<InitializeWrapper>, nonce: u8) -> ProgramResult {
+    pub fn initialize_wrapper(ctx: Context<InitializeWrapper>, _nonce: u8) -> Result<()> {
         let decimals = ctx.accounts.wrapper_mint.decimals;
         require!(
             decimals >= ctx.accounts.underlying_mint.decimals,
@@ -49,13 +49,10 @@ pub mod add_decimals {
 
         let added_decimals =
             unwrap_int!(decimals.checked_sub(ctx.accounts.underlying_mint.decimals));
-        let multiplier = unwrap_or_err!(
-            10u64.checked_pow(added_decimals as u32),
-            InitMultiplierOverflow
-        );
+        let multiplier = unwrap_int!(10u64.checked_pow(added_decimals as u32));
 
         let wrapper = &mut ctx.accounts.wrapper;
-        wrapper.__nonce = nonce;
+        wrapper.__nonce = *unwrap_int!(ctx.bumps.get("wrapper"));
         wrapper.decimals = decimals;
         wrapper.multiplier = multiplier;
         wrapper.wrapper_underlying_mint = ctx.accounts.underlying_mint.key();
@@ -75,17 +72,14 @@ pub mod add_decimals {
 
     /// Deposits underlying tokens to mint wrapped tokens.
     #[access_control(ctx.accounts.validate())]
-    pub fn deposit(ctx: Context<UserStake>, deposit_amount: u64) -> ProgramResult {
+    pub fn deposit(ctx: Context<UserStake>, deposit_amount: u64) -> Result<()> {
         require!(deposit_amount > 0, ZeroAmount);
         require!(
             ctx.accounts.user_underlying_tokens.amount >= deposit_amount,
             InsufficientUnderlyingBalance
         );
 
-        let mint_amount = unwrap_or_err!(
-            ctx.accounts.wrapper.to_wrapped_amount(deposit_amount),
-            MintAmountOverflow
-        );
+        let mint_amount = unwrap_int!(ctx.accounts.wrapper.to_wrapped_amount(deposit_amount));
 
         // Deposit underlying and mint wrapped
         ctx.accounts.deposit_underlying(deposit_amount)?;
@@ -103,7 +97,7 @@ pub mod add_decimals {
 
     /// Deposits wrapped tokens to withdraw underlying tokens.
     #[access_control(ctx.accounts.validate())]
-    pub fn withdraw(ctx: Context<UserStake>, max_burn_amount: u64) -> ProgramResult {
+    pub fn withdraw(ctx: Context<UserStake>, max_burn_amount: u64) -> Result<()> {
         require!(max_burn_amount > 0, ZeroAmount);
         require!(
             ctx.accounts.user_wrapped_tokens.amount >= max_burn_amount,
@@ -111,14 +105,9 @@ pub mod add_decimals {
         );
 
         // Compute true withdraw amount
-        let withdraw_amount = unwrap_or_err!(
-            ctx.accounts.wrapper.to_underlying_amount(max_burn_amount),
-            InvalidWithdrawAmount
-        );
-        let burn_amount = unwrap_or_err!(
-            ctx.accounts.wrapper.to_wrapped_amount(withdraw_amount),
-            InvalidBurnAmount
-        );
+        let withdraw_amount =
+            unwrap_int!(ctx.accounts.wrapper.to_underlying_amount(max_burn_amount),);
+        let burn_amount = unwrap_int!(ctx.accounts.wrapper.to_wrapped_amount(withdraw_amount),);
         let dust_amount = unwrap_int!(max_burn_amount.checked_sub(burn_amount));
 
         // Burn wrapped and withdraw underlying
@@ -137,7 +126,7 @@ pub mod add_decimals {
     }
 
     /// Burn all wrapped tokens to withdraw the underlying tokens.
-    pub fn withdraw_all(ctx: Context<UserStake>) -> ProgramResult {
+    pub fn withdraw_all(ctx: Context<UserStake>) -> Result<()> {
         let max_burn_amount = ctx.accounts.user_wrapped_tokens.amount;
         withdraw(ctx, max_burn_amount)
     }
@@ -151,7 +140,7 @@ pub mod add_decimals {
             action: u16,
             amount_in: u64,
             _minimum_amount_out: u64,
-        ) -> ProgramResult {
+        ) -> Result<()> {
             let action_type = try_or_err!(ActionType::try_from(action), UnknownAction);
             msg!("Router action received: {:?}", action_type);
             match action_type {
@@ -179,7 +168,7 @@ pub struct InitializeWrapper<'info> {
             underlying_mint.to_account_info().key.as_ref(),
             &[wrapper_mint.decimals]
         ],
-        bump = nonce,
+        bump,
         payer = payer
     )]
     pub wrapper: Account<'info, WrappedToken>,
@@ -206,7 +195,7 @@ pub struct InitializeWrapper<'info> {
 
 impl<'info> InitializeWrapper<'info> {
     /// Validates ownership of the accounts of the wrapper.
-    pub fn validate(&self) -> ProgramResult {
+    pub fn validate(&self) -> Result<()> {
         // underlying account checks
         require!(
             self.wrapper_underlying_tokens.amount == 0,
@@ -272,7 +261,7 @@ pub struct UserStake<'info> {
 
 impl<'info> Validate<'info> for UserStake<'info> {
     /// Validates ownership of the accounts of the wrapper.
-    fn validate(&self) -> ProgramResult {
+    fn validate(&self) -> Result<()> {
         assert_keys_eq!(self.wrapper.wrapper_mint, self.wrapper_mint);
         assert_keys_eq!(
             self.wrapper.wrapper_underlying_tokens,
@@ -329,7 +318,7 @@ impl WrappedToken {
 }
 
 /// Errors.
-#[error]
+#[error_code]
 #[derive(Eq, PartialEq)]
 pub enum ErrorCode {
     #[msg("Wrapper underlying tokens account must be empty.")]

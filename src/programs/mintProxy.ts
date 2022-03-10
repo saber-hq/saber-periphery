@@ -17,6 +17,4 @@ export type MintProxyInfo = MintProxyTypes["State"];
 type Accounts = MintProxyTypes["Accounts"];
 export type MinterInfo = Accounts["MinterInfo"];
 
-export type MintProxyError = MintProxyTypes["Error"];
-
 export type MintProxyProgram = MintProxyTypes["Program"];

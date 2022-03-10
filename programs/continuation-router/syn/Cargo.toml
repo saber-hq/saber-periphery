@@ -13,6 +13,6 @@ keywords = ["solana", "saber", "anchor"]
 proc-macro = true
 
 [dependencies]
-anchor-lang = ">=0.17"
+anchor-lang = ">=0.22"
 quote = "1.0"
 syn = "1.0"

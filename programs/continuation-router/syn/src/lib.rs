@@ -37,7 +37,7 @@ pub fn router_action(args: TokenStream, input: TokenStream) -> TokenStream {
                                 &self,
                                 amount_in: u64,
                                 minimum_amount_out: u64
-                            ) -> ProgramResult {
+                            ) -> Result<()> {
                                 crate::router_action_processor::process_action(
                                     CpiContext::new(
                                         self.swap_program.clone(),
@@ -66,7 +66,7 @@ pub fn router_action(args: TokenStream, input: TokenStream) -> TokenStream {
                             &self,
                             amount_in: u64,
                             minimum_amount_out: u64
-                        ) -> ProgramResult {
+                        ) -> Result<()> {
                             ProcessAction::process(self, amount_in, minimum_amount_out)
                         }
                     }
