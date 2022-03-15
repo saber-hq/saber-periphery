@@ -103,3 +103,17 @@ export const MINT_PROXY_STATE = new PublicKey(
 export const MINT_PROXY_AUTHORITY = new PublicKey(
   "GyktbGXbH9kvxP8RGfWsnFtuRgC7QCQo2WBqpo3ryk7L"
 );
+
+/**
+ * Saber Quarry rewarder.
+ */
+export const SBR_REWARDER = new PublicKey(
+  "rXhAofQCT7NN9TUqigyEAUzV1uLL4boeD8CRkNBSkYk"
+);
+
+/**
+ * Saber Quarry mint wrapper.
+ */
+export const SBR_MINT_WRAPPER = new PublicKey(
+  "EVVDA3ZiAjTizemLGXNUN3gb6cffQFEYkFjFZokPmUPz"
+);
