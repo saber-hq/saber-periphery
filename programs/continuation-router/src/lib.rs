@@ -29,7 +29,7 @@ macro_rules! process_action {
             program_id: ctx.program_id,
             action,
             remaining_accounts: ctx.remaining_accounts,
-            token_program: ctx.accounts.continuation.token_program.to_account_info(),
+            token_program: ctx.accounts.continuation.token_program.clone(),
             swap_program: ctx.accounts.continuation.swap_program.to_account_info(),
             owner: ctx.accounts.continuation.owner.to_account_info(),
         };
@@ -464,6 +464,7 @@ pub struct SwapToken<'info> {
     #[account(mut)]
     pub user: Box<Account<'info, TokenAccount>>,
     /// The token account for the pool's reserves of this token.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub reserve: AccountInfo<'info>,
 }
@@ -474,6 +475,7 @@ pub struct SwapOutput<'info> {
     /// The token accounts of the user and the token.
     pub user_token: SwapToken<'info>,
     /// The token account for the fees associated with the token.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub fees: AccountInfo<'info>,
 }

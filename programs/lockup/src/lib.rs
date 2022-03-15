@@ -271,6 +271,7 @@ pub struct CreateRelease<'info> {
     /// Minter info account.
     pub minter_info: Account<'info, MinterInfo>,
     /// Account able to withdraw from the [Release].
+    /// CHECK: Arbitrary.
     pub beneficiary: UncheckedAccount<'info>,
     /// [Release] account.
     #[account(
@@ -304,12 +305,14 @@ pub struct RevokeRelease<'info> {
     #[account(mut, close = payer)]
     pub release: Account<'info, Release>,
     /// Recipient of the [Release] account lamports.
+    /// CHECK: Arbitrary.
     pub payer: UncheckedAccount<'info>,
 }
 
 #[derive(Accounts)]
 pub struct Withdraw<'info> {
     /// Mint authority of the proxy.
+    /// CHECK: Arbitrary.
     pub proxy_mint_authority: UncheckedAccount<'info>,
     /// Mint of the token unlocked.
     #[account(mut)]
@@ -325,6 +328,7 @@ pub struct Withdraw<'info> {
     /// Token program.
     pub token_program: Program<'info, Token>,
     /// Clock sysvar, now unused and may be any account.
+    /// CHECK: Arbitrary.
     pub unused_clock: UncheckedAccount<'info>,
     /// Minter info.
     #[account(mut)]
@@ -338,8 +342,9 @@ pub struct Withdraw<'info> {
 impl<'info> Withdraw<'info> {
     fn validate(&self) -> Result<()> {
         // proxy_mint_authority validations
-        require!(
-            self.proxy_mint_authority.key() == self.mint_proxy_state.proxy_mint_authority,
+        assert_keys_eq!(
+            self.proxy_mint_authority,
+            self.mint_proxy_state.proxy_mint_authority,
             ProxyMintAuthorityMismatch
         );
 

@@ -89,3 +89,17 @@ export const SBR_MINT = "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1";
  * PublicKey of the Saber Protocol Token.
  */
 export const SBR_ADDRESS = new PublicKey(SBR_MINT);
+
+/**
+ * Address of the Mint Proxy state account.
+ */
+export const MINT_PROXY_STATE = new PublicKey(
+  "9qRjwMQYrkd5JvsENaYYxSCgwEuVhK4qAo5kCFHSmdmL"
+);
+
+/**
+ * Address of the mint authority of the SBR token.
+ */
+export const MINT_PROXY_AUTHORITY = new PublicKey(
+  "GyktbGXbH9kvxP8RGfWsnFtuRgC7QCQo2WBqpo3ryk7L"
+);

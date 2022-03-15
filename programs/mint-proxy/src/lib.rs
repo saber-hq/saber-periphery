@@ -10,9 +10,10 @@ mod proxy_seeds;
 
 declare_id!("UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL");
 
-/// Address of the mint proxy program's state assocated account.
+/// Address of the mint proxy program's state associated account.
 pub const PROXY_STATE_ACCOUNT: Pubkey =
     static_pubkey::static_pubkey!("9qRjwMQYrkd5JvsENaYYxSCgwEuVhK4qAo5kCFHSmdmL");
+
 /// Address of the proxy mint authority.
 pub const PROXY_MINT_AUTHORITY: Pubkey =
     static_pubkey::static_pubkey!("GyktbGXbH9kvxP8RGfWsnFtuRgC7QCQo2WBqpo3ryk7L");
