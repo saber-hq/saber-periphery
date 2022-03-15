@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{Token, TokenAccount};
 use vipers::{assert_keys_eq, invariant};
 
 use crate::{Action, Continuation, SwapActionEvent, TokenAmount};
@@ -18,10 +18,12 @@ pub struct ActionContext<'a, 'b, 'c, 'info, T> {
     /// Be very careful when using this directly.
     pub remaining_accounts: &'c [AccountInfo<'info>],
     /// The spl_token program.
-    pub token_program: AccountInfo<'info>,
+    pub token_program: Program<'info, Token>,
     /// The relevant swap program.
+    /// CHECK: Checked by executor
     pub swap_program: AccountInfo<'info>,
     /// The owner of all involved token accounts.
+    /// CHECK: Arbitrary
     pub owner: AccountInfo<'info>,
 }
 

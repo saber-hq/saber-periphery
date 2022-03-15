@@ -10,9 +10,10 @@ mod proxy_seeds;
 
 declare_id!("UBEBk5idELqykEEaycYtQ7iBVrCg6NmvFSzMpdr22mL");
 
-/// Address of the mint proxy program's state assocated account.
+/// Address of the mint proxy program's state associated account.
 pub const PROXY_STATE_ACCOUNT: Pubkey =
     static_pubkey::static_pubkey!("9qRjwMQYrkd5JvsENaYYxSCgwEuVhK4qAo5kCFHSmdmL");
+
 /// Address of the proxy mint authority.
 pub const PROXY_MINT_AUTHORITY: Pubkey =
     static_pubkey::static_pubkey!("GyktbGXbH9kvxP8RGfWsnFtuRgC7QCQo2WBqpo3ryk7L");
@@ -187,7 +188,7 @@ pub mod mint_proxy {
             let proxy_signer = &[&seeds[..]];
             let cpi_ctx = new_set_authority_cpi_context(
                 &proxy_mint_authority,
-                &ctx.accounts.token_mint,
+                &ctx.accounts.token_mint.to_account_info(),
                 &ctx.accounts.token_program,
             )
             .with_signer(proxy_signer);
@@ -214,10 +215,12 @@ pub struct Initialize<'info> {
     pub mint_authority: Signer<'info>,
 
     /// New mint authority. PDA.
+    /// CHECK: Proxy mint authority
     #[account(address = PROXY_MINT_AUTHORITY)]
     pub proxy_mint_authority: UncheckedAccount<'info>,
 
     /// Owner of the mint proxy.
+    /// CHECK: Arbitrary
     pub owner: UncheckedAccount<'info>,
 
     /// Token mint to mint.
@@ -231,10 +234,11 @@ pub struct Initialize<'info> {
 #[derive(Accounts)]
 pub struct SetMintAuthority<'info> {
     pub auth: Auth<'info>,
+    /// CHECK: This is actually checked
     #[account(address = PROXY_MINT_AUTHORITY)]
     pub proxy_mint_authority: UncheckedAccount<'info>,
     #[account(mut)]
-    pub token_mint: AccountInfo<'info>,
+    pub token_mint: Account<'info, Mint>,
     /// The [Token] program.
     pub token_program: Program<'info, Token>,
 }
@@ -246,6 +250,7 @@ pub struct MinterAdd<'info> {
     pub auth: Auth<'info>,
 
     /// Account to authorize as a minter.
+    /// CHECK: Arbitrary.
     pub minter: UncheckedAccount<'info>,
 
     /// Information about the minter.
@@ -278,6 +283,7 @@ pub struct MinterRemove<'info> {
     pub auth: Auth<'info>,
 
     /// Account to deauthorize as a minter.
+    /// CHECK: Arbitrary.
     pub minter: UncheckedAccount<'info>,
 
     /// Information about the minter.
@@ -285,6 +291,8 @@ pub struct MinterRemove<'info> {
     pub minter_info: Account<'info, MinterInfo>,
 
     /// Account which receives the freed lamports
+    /// CHECK: Arbitrary.
+    #[account(mut)]
     pub payer: UncheckedAccount<'info>,
 }
 
@@ -302,6 +310,7 @@ pub struct MinterUpdate<'info> {
 #[derive(Accounts)]
 pub struct PerformMint<'info> {
     /// Mint authority of the proxy.
+    /// CHECK: Checked by Vipers.
     pub proxy_mint_authority: UncheckedAccount<'info>,
 
     /// Minter.
@@ -327,7 +336,7 @@ impl<'info> PerformMint<'info> {
     fn validate(&self, state: &MintProxy) -> Result<()> {
         assert_keys_eq!(self.proxy_mint_authority, PROXY_MINT_AUTHORITY);
         require!(self.minter.is_signer, Unauthorized);
-        assert_keys_eq!(self.minter_info.minter, self.minter);
+        assert_keys_eq!(self.minter_info.minter, self.minter, Unauthorized);
 
         assert_keys_eq!(state.token_mint, self.token_mint);
 
@@ -347,6 +356,27 @@ pub struct MinterInfo {
     /// Nonce field to the struct to hold the bump seed for the program derived address,
     /// sourced from `<https://github.com/project-serum/anchor/blob/ec6888a3b9f702bc41bd3266e7dd70116df3549c/lang/attribute/account/src/lib.rs#L220-L221.>`.
     __nonce: u8,
+}
+
+/// Information about the mint proxy.
+/// Duplicate struct generated for the SDK to use.
+#[account]
+#[derive(Default)]
+pub struct MintProxyInfo {
+    /// Nonce for allowing the proxy mint authority to sign.
+    pub nonce: u8,
+    /// Maximum number of tokens that can be issued.
+    pub hard_cap: u64,
+    /// Account which is the authority over minted tokens.
+    pub proxy_mint_authority: Pubkey,
+    /// Owner account which can perform admin operations.
+    pub owner: Pubkey,
+    /// Next owner account.
+    pub pending_owner: Pubkey,
+    /// Account key of the state struct.
+    pub state_associated_account: Pubkey,
+    /// Mint of the token to be minted
+    pub token_mint: Pubkey,
 }
 
 /// Ensures the function is only called by the owner of the mint proxy.

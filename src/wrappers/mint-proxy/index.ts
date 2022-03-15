@@ -1,4 +1,5 @@
-import { utils } from "@project-serum/anchor";
+import type { Address } from "@project-serum/anchor";
+import { translateAddress, utils } from "@project-serum/anchor";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
 import type { u64 } from "@saberhq/token-utils";
 import {
@@ -16,9 +17,36 @@ import {
   SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
 
+import { SABER_ADDRESSES } from "../../constants";
 import type { MinterInfo, MintProxyProgram } from "../../programs";
 import type { Saber } from "../../sdk";
 import type { PendingMintAndProxy, PendingMintProxy } from "./types";
+
+async function associated(
+  programId: Address,
+  ...args: Array<Address | Buffer>
+): Promise<PublicKey> {
+  const seeds = [Buffer.from([97, 110, 99, 104, 111, 114])]; // b"anchor".
+  args.forEach((arg) => {
+    seeds.push(arg instanceof Buffer ? arg : translateAddress(arg).toBuffer());
+  });
+  const [assoc] = await PublicKey.findProgramAddress(
+    seeds,
+    translateAddress(programId)
+  );
+  return assoc;
+}
+
+/**
+ * Finds the address of a minter.
+ * @param minter
+ * @returns
+ */
+export const findMinterInfoAddress = async (
+  minter: PublicKey
+): Promise<PublicKey> => {
+  return await associated(SABER_ADDRESSES.MintProxy, minter);
+};
 
 export class MintProxyWrapper {
   readonly program: MintProxyProgram;

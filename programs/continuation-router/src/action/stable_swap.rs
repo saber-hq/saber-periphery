@@ -8,7 +8,7 @@ use crate::*;
 macro_rules! build_swap_context {
     ($component:expr, $ctx:expr $(,)?) => {{
         stable_swap_anchor::SwapUserContext {
-            token_program: $ctx.token_program.clone(),
+            token_program: $ctx.token_program.to_account_info(),
             user_authority: $ctx.owner.clone(),
             swap: $component.swap.swap.clone(),
             swap_authority: $component.swap.swap_authority.clone(),

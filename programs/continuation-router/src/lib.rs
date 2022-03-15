@@ -29,7 +29,7 @@ macro_rules! process_action {
             program_id: ctx.program_id,
             action,
             remaining_accounts: ctx.remaining_accounts,
-            token_program: ctx.accounts.continuation.token_program.to_account_info(),
+            token_program: ctx.accounts.continuation.token_program.clone(),
             swap_program: ctx.accounts.continuation.swap_program.to_account_info(),
             owner: ctx.accounts.continuation.owner.to_account_info(),
         };
@@ -201,12 +201,14 @@ pub struct SSWithdrawOne<'info> {
     /// Swap and authority
     pub swap: StableSwap<'info>,
     /// The pool mint of the swap.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub pool_mint: AccountInfo<'info>,
     /// The input account for LP tokens.
     #[account(mut)]
     pub input_lp: Account<'info, TokenAccount>,
     /// The output of the unused token of this component of the route.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub quote_reserves: AccountInfo<'info>,
     /// The output of this component of the route.
@@ -252,12 +254,14 @@ pub struct CreateATAIfNotExists<'info> {
 
     /// The ATA to create.
     #[account(mut)]
-    pub ata: UncheckedAccount<'info>,
+    pub ata: SystemAccount<'info>,
 
     /// Authority of the created ATA.
+    /// CHECK: Passed to ATA program.
     pub authority: UncheckedAccount<'info>,
 
     /// Mint.
+    /// CHECK: Not necessary to deserialize.
     pub mint: UncheckedAccount<'info>,
 
     /// Rent.
@@ -290,6 +294,7 @@ pub struct Begin<'info> {
     pub continuation: Box<Account<'info, Continuation>>,
 
     /// Nonce used for associating the continuation. Any arbitrary [Pubkey] can be passed here.
+    /// CHECK: Arbitrary.
     pub random: UncheckedAccount<'info>,
 
     /// Input token account.
@@ -355,6 +360,8 @@ pub struct End<'info> {
 
     /// Funds the continuation in the beginning transaction and receives
     /// the staked lamports of the continuation in the end transaction.
+    /// CHECK: Arbitrary.
+    #[account(mut)]
     pub payer: UncheckedAccount<'info>,
 }
 
@@ -412,6 +419,7 @@ pub struct ContinuationAccounts<'info> {
     pub token_program: Program<'info, Token>,
 
     /// The relevant swap program.
+    /// CHECK: Arbitrary.
     pub swap_program: UncheckedAccount<'info>,
 
     /// The owner of all involved token accounts.
@@ -428,6 +436,7 @@ pub struct SSDeposit<'info> {
     /// The input of token B of this component of the route.
     pub input_b: SwapToken<'info>,
     /// The pool mint of the swap.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub pool_mint: AccountInfo<'info>,
     /// The destination account for LP tokens.
@@ -439,8 +448,10 @@ pub struct SSDeposit<'info> {
 #[derive(Accounts)]
 pub struct StableSwap<'info> {
     /// The swap account
+    /// CHECK: Checked by [stable_swap_anchor] program.
     pub swap: AccountInfo<'info>,
     /// The authority of the swap.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     pub swap_authority: AccountInfo<'info>,
     /// The clock.
     pub clock: Sysvar<'info, Clock>,
@@ -453,6 +464,7 @@ pub struct SwapToken<'info> {
     #[account(mut)]
     pub user: Box<Account<'info, TokenAccount>>,
     /// The token account for the pool's reserves of this token.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub reserve: AccountInfo<'info>,
 }
@@ -463,6 +475,7 @@ pub struct SwapOutput<'info> {
     /// The token accounts of the user and the token.
     pub user_token: SwapToken<'info>,
     /// The token account for the fees associated with the token.
+    /// CHECK: Checked by [stable_swap_anchor] program.
     #[account(mut)]
     pub fees: AccountInfo<'info>,
 }
