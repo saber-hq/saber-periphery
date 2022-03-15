@@ -1174,10 +1174,10 @@ __metadata:
     typedoc: ^0.22.13
     typescript: ^4.6.2
   peerDependencies:
-    "@saberhq/anchor-contrib": ^1.11
-    "@saberhq/solana-contrib": ^1.11
-    "@saberhq/stableswap-sdk": ^1.11
-    "@saberhq/token-utils": ^1.11
+    "@saberhq/anchor-contrib": ^1.12
+    "@saberhq/solana-contrib": ^1.12
+    "@saberhq/stableswap-sdk": ^1.12
+    "@saberhq/token-utils": ^1.12
     "@solana/web3.js": ^1.29.2
     bn.js: ^5
   languageName: unknown
