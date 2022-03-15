@@ -358,6 +358,27 @@ pub struct MinterInfo {
     __nonce: u8,
 }
 
+/// Information about the mint proxy.
+/// Duplicate struct generated for the SDK to use.
+#[account]
+#[derive(Default)]
+pub struct MintProxyInfo {
+    /// Nonce for allowing the proxy mint authority to sign.
+    pub nonce: u8,
+    /// Maximum number of tokens that can be issued.
+    pub hard_cap: u64,
+    /// Account which is the authority over minted tokens.
+    pub proxy_mint_authority: Pubkey,
+    /// Owner account which can perform admin operations.
+    pub owner: Pubkey,
+    /// Next owner account.
+    pub pending_owner: Pubkey,
+    /// Account key of the state struct.
+    pub state_associated_account: Pubkey,
+    /// Mint of the token to be minted
+    pub token_mint: Pubkey,
+}
+
 /// Ensures the function is only called by the owner of the mint proxy.
 fn only_owner(state: &MintProxy, auth: &Auth) -> Result<()> {
     require!(
