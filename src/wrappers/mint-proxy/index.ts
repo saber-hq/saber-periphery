@@ -185,14 +185,15 @@ export class MintProxyWrapper {
 
   async minterAdd(
     minter: PublicKey,
-    allowance: u64
+    allowance: u64,
+    owner: PublicKey = this.program.provider.wallet.publicKey
   ): Promise<TransactionEnvelope> {
     const minterInfo = await this.program.account.minterInfo.associatedAddress(
       minter
     );
     const ix = this.program.state.instruction.minterAdd(allowance, {
       accounts: {
-        auth: { owner: this.program.provider.wallet.publicKey },
+        auth: { owner },
         minter,
         minterInfo,
         payer: this.program.provider.wallet.publicKey,
@@ -227,14 +228,14 @@ export class MintProxyWrapper {
 
   async minterRemove(
     minter: PublicKey,
-    superAuthority: PublicKey = this.program.provider.wallet.publicKey
+    owner: PublicKey = this.program.provider.wallet.publicKey
   ): Promise<TransactionEnvelope> {
     const minterInfo = await this.program.account.minterInfo.associatedAddress(
       minter
     );
     const ix = this.program.state.instruction.minterRemove({
       accounts: {
-        auth: { owner: superAuthority },
+        auth: { owner },
         minter,
         minterInfo,
         payer: this.program.provider.wallet.publicKey,
