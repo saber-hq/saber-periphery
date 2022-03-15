@@ -52,7 +52,7 @@ pub mod add_decimals {
         let multiplier = unwrap_int!(10u64.checked_pow(added_decimals as u32));
 
         let wrapper = &mut ctx.accounts.wrapper;
-        wrapper.__nonce = *unwrap_int!(ctx.bumps.get("wrapper"));
+        wrapper.__nonce = unwrap_bump!(ctx, "wrapper");
         wrapper.decimals = decimals;
         wrapper.multiplier = multiplier;
         wrapper.wrapper_underlying_mint = ctx.accounts.underlying_mint.key();
@@ -158,7 +158,6 @@ pub mod add_decimals {
 
 /// Accounts for initializing a new wrapper.
 #[derive(Accounts)]
-#[instruction(nonce: u8)]
 pub struct InitializeWrapper<'info> {
     /// The WrappedToken account.
     #[account(

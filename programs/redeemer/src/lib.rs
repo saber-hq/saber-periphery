@@ -234,6 +234,7 @@ pub struct RedeemTokensFromMintProxy<'info> {
     pub mint_proxy_state: CpiState<'info, MintProxy>,
     /// Proxy mint authority.
     /// Owned by the mint proxy.
+    /// CHECK: Arbitrary.
     pub proxy_mint_authority: UncheckedAccount<'info>,
     /// Mint proxy program.
     pub mint_proxy_program: Program<'info, mint_proxy::program::MintProxy>,
