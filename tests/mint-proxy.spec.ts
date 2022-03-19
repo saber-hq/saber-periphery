@@ -404,7 +404,7 @@ describe("MintProxy", () => {
         // wait for withdraw amount to release
         await serumCmn.sleep(3 * 1_000);
 
-        const withdrawAmount = new BN(600);
+        const withdrawAmount = new BN(500);
         const tx = (
           await lockup.withdraw(beneficiary.publicKey, withdrawAmount)
         ).addSigners(beneficiary);
