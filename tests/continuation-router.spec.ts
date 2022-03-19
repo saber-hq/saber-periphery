@@ -16,6 +16,7 @@ import {
   TokenAmount,
   u64,
 } from "@saberhq/token-utils";
+import type { SendTransactionError } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 import { expect } from "chai";
 import invariant from "tiny-invariant";
@@ -352,7 +353,10 @@ describe("Router", () => {
         await tx.confirm();
       } catch (e) {
         // TODO(igm): error should be parsed for the IDL errors
-        expect(e).to.not.be.null;
+        const error = e as SendTransactionError;
+        expect(error.message).to.be.equal(
+          "failed to send transaction: Transaction simulation failed: Error processing Instruction 4: custom program error: 0x1774"
+        );
       }
 
       expect(
