@@ -4,6 +4,7 @@ import * as anchor from "@project-serum/anchor";
 import { expectTX } from "@saberhq/chai-solana";
 import * as serumCmn from "@saberhq/token-utils";
 import { getOrCreateATA, u64 } from "@saberhq/token-utils";
+import type { SendTransactionError } from "@solana/web3.js";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import * as assert from "assert";
 import { expect } from "chai";
@@ -321,12 +322,21 @@ describe("MintProxy", () => {
       it("Fails to withdraw from a release account before release with amount", async () => {
         const tx = await lockup.withdraw(beneficiary.publicKey, new BN(100));
         tx.addSigners(beneficiary);
+
         try {
           await tx.confirm();
         } catch (e) {
           // TODO(igm): error should be parsed for the IDL errors
-          expect(e).to.not.be.null;
+          const error = e as SendTransactionError;
+          expect(error?.message).to.be.equal(
+            "failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1775"
+          );
         }
+        const tokenAccount = await serumCmn.getTokenAccount(
+          provider,
+          beneficiaryTokenAccountAddress
+        );
+        expect(tokenAccount.amount).to.bignumber.eq(new BN(0));
       });
 
       it("Withdraws from the release account", async () => {
@@ -392,13 +402,12 @@ describe("MintProxy", () => {
         expect(initialTokenAccount.amount).to.bignumber.eq(new BN(0));
 
         // wait for withdraw amount to release
-        await serumCmn.sleep(2 * 1_000);
+        await serumCmn.sleep(3 * 1_000);
 
-        const withdrawAmount = new BN(200);
+        const withdrawAmount = new BN(400);
         const tx = (
           await lockup.withdraw(beneficiary.publicKey, withdrawAmount)
         ).addSigners(beneficiary);
-
         await expectTX(tx, "withdraw").to.be.fulfilled;
 
         const finalReleaseAccount = await lockup.fetchRelease(
@@ -412,7 +421,7 @@ describe("MintProxy", () => {
           RELEASE_AMOUNT.sub(withdrawAmount)
         );
 
-        const finalTokenAccount = await serumCmn.getTokenAccount(
+        let finalTokenAccount = await serumCmn.getTokenAccount(
           provider,
           beneficiaryTokenAccountAddress
         );
@@ -426,11 +435,19 @@ describe("MintProxy", () => {
         withdrawAgainTx.addSigners(beneficiary);
 
         try {
-          await tx.confirm();
+          await withdrawAgainTx.confirm();
         } catch (e) {
           // TODO(igm): error should be parsed for the IDL errors
-          expect(e).to.not.be.null;
+          const error = e as SendTransactionError;
+          expect(error?.message).to.be.equal(
+            "failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1775"
+          );
         }
+        finalTokenAccount = await serumCmn.getTokenAccount(
+          provider,
+          beneficiaryTokenAccountAddress
+        );
+        expect(finalTokenAccount.amount).to.bignumber.eq(withdrawAmount);
       });
     });
   });
