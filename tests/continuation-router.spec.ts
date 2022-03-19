@@ -355,7 +355,7 @@ describe("Router", () => {
         // TODO(igm): error should be parsed for the IDL errors
         const error = e as SendTransactionError;
         expect(error.message).to.be.equal(
-          "Error: failed to send transaction: Transaction simulation failed: Error processing Instruction 4: custom program error: 0x1774"
+          "failed to send transaction: Transaction simulation failed: Error processing Instruction 4: custom program error: 0x1774"
         );
       }
 
