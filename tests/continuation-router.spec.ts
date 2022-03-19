@@ -16,7 +16,8 @@ import {
   TokenAmount,
   u64,
 } from "@saberhq/token-utils";
-import { PublicKey, SendTransactionError } from "@solana/web3.js";
+import type { SendTransactionError } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { expect } from "chai";
 import invariant from "tiny-invariant";
 
