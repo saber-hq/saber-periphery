@@ -328,7 +328,7 @@ describe("MintProxy", () => {
         } catch (e) {
           // TODO(igm): error should be parsed for the IDL errors
           const error = e as SendTransactionError;
-          expect(error?.message).to.be.equal(
+          expect(error.message).to.be.equal(
             "failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1775"
           );
         }
@@ -439,7 +439,7 @@ describe("MintProxy", () => {
         } catch (e) {
           // TODO(igm): error should be parsed for the IDL errors
           const error = e as SendTransactionError;
-          expect(error?.message).to.be.equal(
+          expect(error.message).to.be.equal(
             "failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1775"
           );
         }
