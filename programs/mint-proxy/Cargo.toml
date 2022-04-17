@@ -1,6 +1,6 @@
 [package]
 name = "mint-proxy"
-version = "1.1.1"
+version = "1.1.2"
 description = "Manages the minting of new Saber tokens."
 edition = "2021"
 license = "AGPL-3.0"
