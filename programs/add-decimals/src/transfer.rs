@@ -56,7 +56,7 @@ impl<'info> UserStake<'info> {
     pub fn burn_wrapped(&self, amount: u64) -> Result<()> {
         let cpi_accounts = token::Burn {
             mint: self.wrapper_mint.to_account_info(),
-            to: self.user_wrapped_tokens.to_account_info(),
+            from: self.user_wrapped_tokens.to_account_info(),
             authority: self.owner.to_account_info(),
         };
         perform_as_user!(self, burn, cpi_accounts, amount)

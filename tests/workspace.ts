@@ -31,7 +31,7 @@ export const makeSDK = (): Saber => {
   if (!ANCHOR_PROVIDER_URL) {
     throw new Error("no anchor provider URL");
   }
-  const anchorProvider = anchor.getProvider();
+  const anchorProvider = anchor.AnchorProvider.env();
   // if the program isn't loaded, load the default
   const provider = SolanaProvider.init({
     connection: anchorProvider.connection,

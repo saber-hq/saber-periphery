@@ -1,8 +1,8 @@
 //! Manages the minting of new Saber tokens.
 #![allow(deprecated)]
 
-use anchor_lang::prelude::*;
 use anchor_lang::solana_program;
+use anchor_lang::{prelude::*, solana_program::pubkey::PUBKEY_BYTES};
 use anchor_spl::token::{self, Mint, SetAuthority, Token, TokenAccount};
 use vipers::prelude::*;
 
@@ -261,6 +261,7 @@ pub struct MinterAdd<'info> {
             minter.key().as_ref()
         ],
         bump,
+        space = 8 + MinterInfo::LEN,
         payer = payer
     )]
     pub minter_info: Account<'info, MinterInfo>,
@@ -356,6 +357,10 @@ pub struct MinterInfo {
     /// Nonce field to the struct to hold the bump seed for the program derived address,
     /// sourced from `<https://github.com/project-serum/anchor/blob/ec6888a3b9f702bc41bd3266e7dd70116df3549c/lang/attribute/account/src/lib.rs#L220-L221.>`.
     __nonce: u8,
+}
+
+impl MinterInfo {
+    pub const LEN: usize = PUBKEY_BYTES + 8 + 1;
 }
 
 /// Information about the mint proxy.

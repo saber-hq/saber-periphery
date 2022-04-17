@@ -42,7 +42,7 @@ export class WrappedTokenActions {
   async createIfNotExists(
     mintKP: Keypair = Keypair.generate()
   ): Promise<TransactionEnvelope | null> {
-    const info = await this.program.provider.connection.getAccountInfo(
+    const info = await this.provider.connection.getAccountInfo(
       this.wrapped.wrapper
     );
     if (info) {
@@ -63,7 +63,7 @@ export class WrappedTokenActions {
         wrapperUnderlyingTokens: underlyingTokensKP.publicKey,
         underlyingMint: this.wrapped.underlying.mintAccount,
         wrapperMint: mintKP.publicKey,
-        payer: this.program.provider.wallet.publicKey,
+        payer: this.provider.wallet.publicKey,
         rent: SYSVAR_RENT_PUBKEY,
         systemProgram: SystemProgram.programId,
       },
@@ -83,11 +83,11 @@ export class WrappedTokenActions {
       this.provider,
       [
         SystemProgram.createAccount({
-          fromPubkey: this.program.provider.wallet.publicKey,
+          fromPubkey: this.provider.wallet.publicKey,
           newAccountPubkey: underlyingTokensKP.publicKey,
           space: TokenAccountLayout.span,
           lamports: await SPLToken.getMinBalanceRentForExemptAccount(
-            this.program.provider.connection
+            this.provider.connection
           ),
           programId: TOKEN_PROGRAM_ID,
         }),
@@ -192,7 +192,7 @@ export class WrappedTokenActions {
     invariant(this.wrapped.mintAccount, "token not initialized");
     return getATAAddress({
       mint: this.wrapped.mintAccount,
-      owner: this.program.provider.wallet.publicKey,
+      owner: this.provider.wallet.publicKey,
     });
   }
 
@@ -213,7 +213,7 @@ export class WrappedTokenActions {
           underlying: this.wrapped.underlying.mintAccount,
           wrapped: mint,
         },
-        owner: this.program.provider.wallet.publicKey,
+        owner: this.provider.wallet.publicKey,
       });
 
     return {
@@ -223,7 +223,7 @@ export class WrappedTokenActions {
         wrapperMint: mint,
         wrapperUnderlyingTokens: (await this.loadData())
           .wrapperUnderlyingTokens,
-        owner: this.program.provider.wallet.publicKey,
+        owner: this.provider.wallet.publicKey,
         userUnderlyingTokens: accounts.underlying,
         userWrappedTokens: accounts.wrapped,
         tokenProgram: TOKEN_PROGRAM_ID,

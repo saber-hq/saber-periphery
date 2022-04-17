@@ -522,7 +522,7 @@ describe("Router", () => {
           new TokenAmount(wbtc, 90_000000)
         );
         expect(await balanceOf(provider, renBTC, user)).to.tokenAmount.equal(
-          new TokenAmount(renBTC, 9_99990010)
+          new TokenAmount(renBTC, "999990009")
         );
       });
     });
@@ -541,7 +541,7 @@ describe("Router", () => {
         const userSDK = sdk.withSigner(user);
         const plan = userSDK.router.createPlan(
           new TokenAmount(renBTC, 10_00000000),
-          new TokenAmount(wbtc, 9_900000),
+          new TokenAmount(wbtc, "9900000"),
           [
             {
               action: "ssSwap",
@@ -565,8 +565,7 @@ describe("Router", () => {
           new TokenAmount(renBTC, 90_00000000)
         );
         expect(await balanceOf(provider, wbtc8, user)).to.tokenAmount.equal(
-          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-          new TokenAmount(wbtc8, 0_00000010)
+          new TokenAmount(wbtc8, "9")
         );
         expect(await balanceOf(provider, wbtc, user)).to.tokenAmount.equal(
           new TokenAmount(wbtc, 9_999900)

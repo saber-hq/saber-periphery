@@ -55,6 +55,10 @@ export class MintProxyWrapper {
     this.program = saber.programs.MintProxy;
   }
 
+  get provider() {
+    return this.saber.provider;
+  }
+
   async getProxyMintAuthority(): Promise<[PublicKey, number]> {
     const stateAccount = this.program.state.address();
     return await PublicKey.findProgramAddress(
@@ -68,7 +72,7 @@ export class MintProxyWrapper {
     mintAuthority,
     tokenMint,
     tokenProgram = TOKEN_PROGRAM_ID,
-    owner = this.program.provider.wallet.publicKey,
+    owner = this.provider.wallet.publicKey,
   }: {
     hardcap: u64;
     mintAuthority: PublicKey;
@@ -144,7 +148,7 @@ export class MintProxyWrapper {
   }: {
     hardCap: TokenAmount;
   }): Promise<TransactionEnvelope> {
-    const owner = this.program.provider.wallet.publicKey;
+    const owner = this.provider.wallet.publicKey;
     const [proxyMintAuthority, nonce] = await this.getProxyMintAuthority();
     const instructions = [
       this.program.state.instruction.new(nonce, hardCap.toU64(), {
@@ -171,7 +175,7 @@ export class MintProxyWrapper {
    */
   async fetchMinterInfo(minter: PublicKey): Promise<MinterInfo | null> {
     const minterInfoAddress = await this.getMinterInfoAddress(minter);
-    const accountInfo = await this.program.provider.connection.getAccountInfo(
+    const accountInfo = await this.provider.connection.getAccountInfo(
       minterInfoAddress
     );
     if (!accountInfo) {
@@ -186,7 +190,7 @@ export class MintProxyWrapper {
   async minterAdd(
     minter: PublicKey,
     allowance: u64,
-    owner: PublicKey = this.program.provider.wallet.publicKey
+    owner: PublicKey = this.provider.wallet.publicKey
   ): Promise<TransactionEnvelope> {
     const minterInfo = await this.program.account.minterInfo.associatedAddress(
       minter
@@ -196,7 +200,7 @@ export class MintProxyWrapper {
         auth: { owner },
         minter,
         minterInfo,
-        payer: this.program.provider.wallet.publicKey,
+        payer: this.provider.wallet.publicKey,
         rent: SYSVAR_RENT_PUBKEY,
         systemProgram: SystemProgram.programId,
       },
@@ -219,7 +223,7 @@ export class MintProxyWrapper {
     );
     const ix = this.program.state.instruction.minterUpdate(allowance, {
       accounts: {
-        auth: { owner: this.program.provider.wallet.publicKey },
+        auth: { owner: this.provider.wallet.publicKey },
         minterInfo,
       },
     });
@@ -228,7 +232,7 @@ export class MintProxyWrapper {
 
   async minterRemove(
     minter: PublicKey,
-    owner: PublicKey = this.program.provider.wallet.publicKey
+    owner: PublicKey = this.provider.wallet.publicKey
   ): Promise<TransactionEnvelope> {
     const minterInfo = await this.program.account.minterInfo.associatedAddress(
       minter
@@ -238,7 +242,7 @@ export class MintProxyWrapper {
         auth: { owner },
         minter,
         minterInfo,
-        payer: this.program.provider.wallet.publicKey,
+        payer: this.provider.wallet.publicKey,
       },
     });
     return this.saber.newTx([ix]);
@@ -247,7 +251,7 @@ export class MintProxyWrapper {
   transferOwnership(nextOwner: PublicKey): TransactionEnvelope {
     return this.saber.newTx([
       this.program.state.instruction.transferOwnership(nextOwner, {
-        accounts: { owner: this.program.provider.wallet.publicKey },
+        accounts: { owner: this.provider.wallet.publicKey },
       }),
     ]);
   }
@@ -255,7 +259,7 @@ export class MintProxyWrapper {
   acceptOwnership(): TransactionEnvelope {
     return this.saber.newTx([
       this.program.state.instruction.acceptOwnership({
-        accounts: { owner: this.program.provider.wallet.publicKey },
+        accounts: { owner: this.provider.wallet.publicKey },
       }),
     ]);
   }
