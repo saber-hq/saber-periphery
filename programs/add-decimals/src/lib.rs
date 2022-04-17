@@ -6,7 +6,7 @@
 #![deny(rustdoc::all)]
 #![allow(rustdoc::missing_doc_code_examples)]
 
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::pubkey::PUBKEY_BYTES};
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use continuation_router::{ActionType, RouterActionProcessor};
 use vipers::prelude::*;
@@ -168,6 +168,7 @@ pub struct InitializeWrapper<'info> {
             &[wrapper_mint.decimals]
         ],
         bump,
+        space = 8 + WrappedToken::LEN,
         payer = payer
     )]
     pub wrapper: Account<'info, WrappedToken>,
@@ -302,6 +303,8 @@ pub struct WrappedToken {
 }
 
 impl WrappedToken {
+    pub const LEN: usize = 1 + 8 + PUBKEY_BYTES * 3 + 1;
+
     pub fn to_wrapped_amount(&self, amount: u64) -> Option<u64> {
         self.multiplier.checked_mul(amount)
     }

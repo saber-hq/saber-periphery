@@ -26,13 +26,17 @@ export class LockupWrapper {
     this.program = saber.programs.Lockup;
   }
 
+  get provider() {
+    return this.saber.provider;
+  }
+
   async releaseAddress(beneficiary: PublicKey): Promise<PublicKey> {
     return await this.program.account.release.associatedAddress(beneficiary);
   }
 
   async fetchRelease(beneficiary: PublicKey): Promise<ReleaseData | null> {
     const key = await this.releaseAddress(beneficiary);
-    const data = await this.program.provider.connection.getAccountInfo(key);
+    const data = await this.provider.connection.getAccountInfo(key);
     if (!data) {
       return null;
     }
@@ -62,10 +66,10 @@ export class LockupWrapper {
     const minterAddIx =
       this.saber.programs.MintProxy.state.instruction.minterAdd(amount, {
         accounts: {
-          auth: { owner: this.program.provider.wallet.publicKey },
+          auth: { owner: this.provider.wallet.publicKey },
           minter: release,
           minterInfo,
-          payer: this.program.provider.wallet.publicKey,
+          payer: this.provider.wallet.publicKey,
           systemProgram: SystemProgram.programId,
           rent: SYSVAR_RENT_PUBKEY,
         },
@@ -78,10 +82,10 @@ export class LockupWrapper {
         accounts: {
           minterInfo,
           mint,
-          auth: { owner: this.program.provider.wallet.publicKey },
+          auth: { owner: this.provider.wallet.publicKey },
           beneficiary,
           release,
-          payer: this.program.provider.wallet.publicKey,
+          payer: this.provider.wallet.publicKey,
           systemProgram: SystemProgram.programId,
           rent: SYSVAR_RENT_PUBKEY,
           mintProxyProgram: this.saber.programs.MintProxy.programId,
@@ -187,17 +191,17 @@ export class LockupWrapper {
     const minterRemoveIx =
       this.saber.programs.MintProxy.state.instruction.minterRemove({
         accounts: {
-          auth: { owner: this.program.provider.wallet.publicKey },
+          auth: { owner: this.provider.wallet.publicKey },
           minter: release,
           minterInfo,
-          payer: this.program.provider.wallet.publicKey,
+          payer: this.provider.wallet.publicKey,
         },
       });
     const revokeReleaseIx = this.program.state.instruction.revokeRelease({
       accounts: {
-        auth: { owner: this.program.provider.wallet.publicKey },
+        auth: { owner: this.provider.wallet.publicKey },
         release,
-        payer: this.program.provider.wallet.publicKey,
+        payer: this.provider.wallet.publicKey,
       },
     });
     return {

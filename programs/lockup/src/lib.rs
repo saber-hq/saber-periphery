@@ -15,8 +15,8 @@ macro_rules! associated_seeds {
     };
 }
 
-use anchor_lang::accounts::cpi_state::CpiState;
 use anchor_lang::prelude::*;
+use anchor_lang::{accounts::cpi_state::CpiState, solana_program::pubkey::PUBKEY_BYTES};
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
@@ -281,6 +281,7 @@ pub struct CreateRelease<'info> {
             beneficiary.key().as_ref()
         ],
         bump,
+        space = 8 + Release::LEN,
         payer = payer
     )]
     pub release: Account<'info, Release>,
@@ -430,6 +431,8 @@ pub struct Release {
 }
 
 impl Release {
+    pub const LEN: usize = PUBKEY_BYTES * 4 + 8 + 8 + 8 + 8 + 8 + 1;
+
     /// Gets the nonce.
     pub fn nonce(&self) -> u8 {
         self.__nonce

@@ -7,7 +7,7 @@
 
 use continuation_router_syn::router_action;
 
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::pubkey::PUBKEY_BYTES};
 use anchor_spl::token::{Token, TokenAccount};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
 use vipers::prelude::*;
@@ -289,6 +289,7 @@ pub struct Begin<'info> {
             random.key().as_ref()
         ],
         bump,
+        space = 8 + Continuation::LEN,
         payer = payer
     )]
     pub continuation: Box<Account<'info, Continuation>>,
@@ -516,6 +517,18 @@ pub struct Continuation {
     __nonce: u8,
 }
 
+impl Continuation {
+    pub const LEN: usize = PUBKEY_BYTES * 2
+        + TokenAmount::LEN
+        + PUBKEY_BYTES
+        + TokenAmount::LEN
+        + 2
+        + PUBKEY_BYTES
+        + 8
+        + TokenAmount::LEN
+        + 1;
+}
+
 /// --------------------------------
 /// Error codes
 /// --------------------------------
@@ -580,6 +593,8 @@ pub struct TokenAmount {
 }
 
 impl TokenAmount {
+    pub const LEN: usize = PUBKEY_BYTES + 8;
+
     fn new(mint: Pubkey, amount: u64) -> TokenAmount {
         TokenAmount { mint, amount }
     }

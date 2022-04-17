@@ -1,4 +1,4 @@
-import { getProvider } from "@project-serum/anchor";
+import { AnchorProvider } from "@project-serum/anchor";
 import type { SwapTokenInfo } from "@saberhq/stableswap-sdk";
 import type { Token } from "@saberhq/token-utils";
 import {
@@ -29,7 +29,7 @@ export const initATA = async (
       token.mintAccount,
       account,
       owner.publicKey,
-      getProvider().wallet.publicKey
+      AnchorProvider.env().wallet.publicKey
     )
   );
 
@@ -46,9 +46,13 @@ export const initATA = async (
     );
   }
   // mint tokens
-  await getProvider().send(tx, mint ? [mint.minter] : undefined, {
-    commitment: "confirmed",
-  });
+  await AnchorProvider.env().sendAndConfirm(
+    tx,
+    mint ? [mint.minter] : undefined,
+    {
+      commitment: "confirmed",
+    }
+  );
   return account;
 };
 

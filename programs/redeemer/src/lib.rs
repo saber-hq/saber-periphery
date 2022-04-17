@@ -3,8 +3,8 @@
 #![allow(rustdoc::missing_doc_code_examples)]
 #![allow(deprecated)]
 
-use anchor_lang::accounts::cpi_state::CpiState;
 use anchor_lang::prelude::*;
+use anchor_lang::{accounts::cpi_state::CpiState, solana_program::pubkey::PUBKEY_BYTES};
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mint_proxy::mint_proxy::MintProxy;
 use mint_proxy::MinterInfo;
@@ -152,6 +152,10 @@ pub struct Redeemer {
     pub redemption_vault: Pubkey,
 }
 
+impl Redeemer {
+    pub const LEN: usize = 1 + PUBKEY_BYTES * 3;
+}
+
 // --------------------------------
 // Instructions
 // --------------------------------
@@ -195,6 +199,7 @@ pub struct CreateRedeemer<'info> {
             tokens.redemption_mint.to_account_info().key.as_ref()
         ],
         bump,
+        space = 8 + Redeemer::LEN,
         payer = payer
     )]
     pub redeemer: Account<'info, Redeemer>,

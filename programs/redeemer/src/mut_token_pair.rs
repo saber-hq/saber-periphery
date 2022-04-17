@@ -14,7 +14,7 @@ impl<'info> MutTokenPair<'info> {
     ) -> Result<()> {
         let cpi_accounts = token::Burn {
             mint: self.iou_mint.to_account_info(),
-            to: source_account,
+            from: source_account,
             authority: source_authority,
         };
         let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), cpi_accounts);
