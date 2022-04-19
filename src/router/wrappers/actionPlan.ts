@@ -4,6 +4,7 @@ import type { StableSwap } from "@saberhq/stableswap-sdk";
 import { SWAP_PROGRAM_ID } from "@saberhq/stableswap-sdk";
 import type { Token, TokenAmount } from "@saberhq/token-utils";
 import {
+  getATAAddresses,
   getOrCreateATA,
   getOrCreateATAs,
   NATIVE_MINT,
@@ -65,12 +66,12 @@ export class ActionPlan {
 
     const initInstructions: TransactionInstruction[] = [];
     const initedAccounts = new Set<string>();
-    const { accounts } = await getOrCreateATAs({
-      provider: this.router.provider,
+    const { accounts } = await getATAAddresses({
       mints: {
         input: this.inputAmount.token.mintAccount,
         output: this.minimumAmountOut.token.mintAccount,
       },
+      owner: this.router.provider.walletKey,
     });
 
     // the input account should already exist
@@ -87,8 +88,8 @@ export class ActionPlan {
       {
         accounts: {
           continuation: continuationKP.publicKey,
-          input: accounts.input,
-          output: accounts.output,
+          input: accounts.input.address,
+          output: accounts.output.address,
           owner: user,
         },
       }
@@ -131,7 +132,7 @@ export class ActionPlan {
     const end = this.program.instruction.end({
       accounts: {
         continuation: continuationAddr,
-        output: accounts.output,
+        output: accounts.output.address,
         owner: user,
         payer: user,
       },
