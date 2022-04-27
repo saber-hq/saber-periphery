@@ -242,10 +242,8 @@ pub mod lockup {
 
     /// Convenience function for UI's to calculate the withdrawable amount.
     pub fn available_for_withdrawal(ctx: Context<AvailableForWithdrawal>) -> Result<()> {
-        let available = calculator::available_for_withdrawal(
-            &ctx.accounts.release,
-            ctx.accounts.clock.unix_timestamp,
-        );
+        let now = Clock::get()?.unix_timestamp;
+        let available = calculator::available_for_withdrawal(&ctx.accounts.release, now);
         // Log as string so that JS can read as a BN.
         msg!(&format!("{{ \"result\": \"{}\" }}", available));
         Ok(())
@@ -396,8 +394,8 @@ impl<'info> Withdraw<'info> {
 
 #[derive(Accounts)]
 pub struct AvailableForWithdrawal<'info> {
+    /// [Release] to inspect.
     pub release: Account<'info, Release>,
-    pub clock: Sysvar<'info, Clock>,
 }
 
 /// Contains information about a beneficiary and the tokens it can claim
