@@ -1,10 +1,12 @@
 import { utils } from "@project-serum/anchor";
 import type { Network } from "@saberhq/solana-contrib";
+import { getProgramAddress } from "@saberhq/solana-contrib";
 import { Token, TokenAmount } from "@saberhq/token-utils";
 import { PublicKey } from "@solana/web3.js";
 import JSBI from "jsbi";
 import invariant from "tiny-invariant";
 
+import { SABER_ADDRESSES } from "../../constants";
 import type { AddDecimalsProgram } from "../../programs";
 
 /**
@@ -129,6 +131,27 @@ export class LazyWrappedToken<K extends PublicKey | null = PublicKey | null> {
         Buffer.from([decimals]),
       ],
       programID
+    );
+  }
+
+  /**
+   * Gets the address of a wrapped token.
+   * @param programID
+   * @param underlyingMint
+   * @param decimals
+   * @returns
+   */
+  static getAddressSync(
+    underlyingMint: PublicKey,
+    decimals: number
+  ): PublicKey {
+    return getProgramAddress(
+      [
+        utils.bytes.utf8.encode("anchor"), // b"anchor".
+        underlyingMint.toBytes(),
+        Buffer.from([decimals]),
+      ],
+      SABER_ADDRESSES.AddDecimals
     );
   }
 }
