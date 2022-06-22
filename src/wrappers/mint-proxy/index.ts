@@ -1,5 +1,4 @@
-import type { Address } from "@project-serum/anchor";
-import { translateAddress, utils } from "@project-serum/anchor";
+import { utils } from "@project-serum/anchor";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
 import { getProgramAddress } from "@saberhq/solana-contrib";
 import type { u64 } from "@saberhq/token-utils";
@@ -24,14 +23,14 @@ import type { Saber } from "../../sdk";
 import type { PendingMintAndProxy, PendingMintProxy } from "./types";
 
 const associated = (
-  programId: Address,
-  ...args: Array<Address | Buffer>
+  programId: PublicKey,
+  ...args: Array<PublicKey | Buffer>
 ): PublicKey => {
   const seeds = [Buffer.from([97, 110, 99, 104, 111, 114])]; // b"anchor".
   args.forEach((arg) => {
-    seeds.push(arg instanceof Buffer ? arg : translateAddress(arg).toBuffer());
+    seeds.push(arg instanceof Buffer ? arg : arg.toBuffer());
   });
-  return getProgramAddress(seeds, translateAddress(programId));
+  return getProgramAddress(seeds, programId);
 };
 
 /**
