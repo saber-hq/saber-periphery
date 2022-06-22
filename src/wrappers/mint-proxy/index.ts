@@ -1,6 +1,6 @@
-import type { Address } from "@project-serum/anchor";
-import { translateAddress, utils } from "@project-serum/anchor";
+import { utils } from "@project-serum/anchor";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
+import { getProgramAddress } from "@saberhq/solana-contrib";
 import type { u64 } from "@saberhq/token-utils";
 import {
   ChainId,
@@ -22,30 +22,37 @@ import type { MinterInfo, MintProxyProgram } from "../../programs";
 import type { Saber } from "../../sdk";
 import type { PendingMintAndProxy, PendingMintProxy } from "./types";
 
-async function associated(
-  programId: Address,
-  ...args: Array<Address | Buffer>
-): Promise<PublicKey> {
+const associated = (
+  programId: PublicKey,
+  ...args: Array<PublicKey | Buffer>
+): PublicKey => {
   const seeds = [Buffer.from([97, 110, 99, 104, 111, 114])]; // b"anchor".
   args.forEach((arg) => {
-    seeds.push(arg instanceof Buffer ? arg : translateAddress(arg).toBuffer());
+    seeds.push(arg instanceof Buffer ? arg : arg.toBuffer());
   });
-  const [assoc] = await PublicKey.findProgramAddress(
-    seeds,
-    translateAddress(programId)
-  );
-  return assoc;
-}
+  return getProgramAddress(seeds, programId);
+};
+
+/**
+ * Finds the address of a minter.
+ * @param minter
+ *
+ * @deprecated use {@link getMinterInfoAddress}
+ * @returns
+ */
+export const findMinterInfoAddress = async (
+  minter: PublicKey
+): Promise<PublicKey> => {
+  return Promise.resolve(getMinterInfoAddress(minter));
+};
 
 /**
  * Finds the address of a minter.
  * @param minter
  * @returns
  */
-export const findMinterInfoAddress = async (
-  minter: PublicKey
-): Promise<PublicKey> => {
-  return await associated(SABER_ADDRESSES.MintProxy, minter);
+export const getMinterInfoAddress = (minter: PublicKey): PublicKey => {
+  return associated(SABER_ADDRESSES.MintProxy, minter);
 };
 
 export class MintProxyWrapper {

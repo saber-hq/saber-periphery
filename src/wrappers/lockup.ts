@@ -1,14 +1,13 @@
-import type * as anchor from "@project-serum/anchor";
 import type { TransactionEnvelope } from "@saberhq/solana-contrib";
 import type { u64 } from "@saberhq/token-utils";
 import { getOrCreateATA, TOKEN_PROGRAM_ID } from "@saberhq/token-utils";
-import type { PublicKey } from "@solana/web3.js";
+import type { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import {
   SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
-import { BN } from "bn.js";
+import BN from "bn.js";
 
 import type { LockupProgram, ReleaseData } from "../programs/lockup";
 import type { Saber } from "../sdk";
@@ -16,7 +15,7 @@ import type { Saber } from "../sdk";
 const ZERO = new BN(0);
 
 export interface PendingRelease {
-  release: anchor.web3.PublicKey;
+  release: PublicKey;
   tx: TransactionEnvelope;
 }
 
@@ -55,9 +54,9 @@ export class LockupWrapper {
     minterInfo,
     mint,
   }: {
-    amount: anchor.BN;
-    startTs: anchor.BN;
-    endTs: anchor.BN;
+    amount: BN;
+    startTs: BN;
+    endTs: BN;
     beneficiary: PublicKey;
     release: PublicKey;
     minterInfo: PublicKey;
@@ -107,9 +106,9 @@ export class LockupWrapper {
     endTs,
     beneficiary,
   }: {
-    amount: anchor.BN;
-    startTs: anchor.BN;
-    endTs: anchor.BN;
+    amount: BN;
+    startTs: BN;
+    endTs: BN;
     beneficiary: PublicKey;
   }): Promise<PendingRelease> {
     const release = await this.releaseAddress(beneficiary);
@@ -139,7 +138,7 @@ export class LockupWrapper {
     const mintProxyStateAddress = this.saber.mintProxy.program.state.address();
     const mintProxyState = await this.saber.mintProxy.program.state.fetch();
 
-    const instructions: anchor.web3.TransactionInstruction[] = [];
+    const instructions: TransactionInstruction[] = [];
     const { address, instruction } = await getOrCreateATA({
       provider: this.saber.provider,
       mint: mintProxyState.tokenMint,
