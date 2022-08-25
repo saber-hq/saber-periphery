@@ -86,5 +86,5 @@
     "*.{ts,tsx}": "eslint --fix --cache",
     "*.{css,md,json,webmanifest,yml,yaml,js,jsx,html,yml,yaml}": "prettier --write"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@3.2.3"
 }
