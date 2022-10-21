@@ -71,6 +71,7 @@
     "@types/bn.js": "^5"
   },
   "peerDependencies": {
+    "@project-serum/anchor": "^0.24.2",
     "@saberhq/anchor-contrib": "^1.13",
     "@saberhq/solana-contrib": "^1.13",
     "@saberhq/stableswap-sdk": "^1.13",
