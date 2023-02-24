@@ -25,5 +25,5 @@ anchor-spl = ">=0.22"
 vipers = "2.0.1"
 spl-token = { version = "^3", features = ["no-entrypoint"] }
 continuation-router-syn = { version = "^1.0", path = "./syn" }
-num_enum = "0.5.6"
+num_enum = "0.5.11"
 stable-swap-anchor = "1.8.0"
